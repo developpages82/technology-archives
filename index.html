@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TECHNOLOGY ARCHIVE (仮) — Creative × Technology Intelligence</title>
+<style>
+  /* ===== DESIGN.md (WIRED.jp) 準拠 ===== */
+  :root{
+    --ink:#000; --body:#1a1a1a; --desc:#333; --meta:#757575;
+    --disabled:#999; --nav-text:#e5e5e5; --bg:#fff; --header-bg:#000;
+    --line:#000; --line-soft:#e5e5e5; --ph:#e5e5e5;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:HelveticaNeue,"Helvetica Neue",Helvetica,Arial,
+      游ゴシック体,YuGothic,"游ゴシック Medium","Yu Gothic Medium",
+      游ゴシック,"Yu Gothic","ヒラギノ角ゴ ProN W3","Hiragino Kaku Gothic ProN",
+      "ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","MS ゴシック","MS Gothic",sans-serif;
+    background:var(--bg); color:var(--body);
+    font-size:16px; line-height:1.75;
+    font-feature-settings:"palt";
+    overflow-x:hidden; /* 100vwフルブリード時の横スクロール防止 */
+  }
+  .mono{
+    font-family:"WiredMono",ui-monospace,"SFMono-Regular","Courier New",monospace;
+    font-feature-settings:normal;
+    font-size:11px; line-height:1.18; letter-spacing:0.083em;
+    text-transform:uppercase;
+  }
+  .screen{display:none; max-width:1440px; margin:0 auto; padding:0 20px 96px;}
+  .screen.active{display:block;}
+  .note{display:inline-block; color:var(--meta); border:1px dashed var(--meta); font-size:11px; line-height:1.5; padding:2px 8px; margin:8px 0;}
+
+  /* ===== ヘッダー(全画面共通・固定要素)。黒帯はブラウザ両端までフルブリード ===== */
+  .site-header{background:var(--header-bg); color:#fff;
+    width:100vw; margin:0 calc(50% - 50vw);
+    padding:22px max(24px, calc(50vw - 700px));
+    display:flex; align-items:center; gap:28px; flex-wrap:wrap;}
+  .logo{font-weight:700; font-size:22px; color:#fff; letter-spacing:.02em; white-space:nowrap; cursor:pointer;}
+  .logo small{display:block; font-weight:400; color:var(--nav-text); margin-top:2px;}
+  .gnav{display:flex; gap:22px;}
+  .gnav a{color:var(--nav-text); text-decoration:none; cursor:pointer; padding:4px 0;}
+  .gnav a.on{color:#fff; border-bottom:2px solid #fff;}
+  .searchbar{flex:1; min-width:200px; border:1px solid #fff; background:transparent; color:#fff; padding:8px 14px; font-size:12px; border-radius:0; -webkit-appearance:none; appearance:none; outline:none;}
+  .searchbar::placeholder{color:var(--nav-text); opacity:.8;}
+  .searchbar:focus{background:rgba(255,255,255,.12);}
+  input.searchbar{font-family:"WiredMono",ui-monospace,"SFMono-Regular","Courier New",monospace; letter-spacing:0.083em;}
+
+  .sec-label{color:var(--meta); margin:44px 0 6px;}
+  h2.sec{font-size:32px; font-weight:700; line-height:1.625; color:var(--ink); margin:0 0 10px;}
+  h2.sec small{font-size:14px; font-weight:400; color:var(--meta); margin-left:12px;}
+  .caption{font-size:13px; color:var(--desc); margin-bottom:12px;}
+
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0;}
+  .chip{border:1px solid var(--ink); background:#fff; color:var(--ink); padding:5px 14px; cursor:pointer; user-select:none;}
+  .chip.on{background:var(--ink); color:#fff;}
+  .chip.uc{border-color:var(--meta); color:var(--meta);}
+  .chip.uc.on{background:var(--ink); border-color:var(--ink); color:#fff;}
+
+  .sortrow{display:flex; align-items:center; gap:14px; margin:20px 0; flex-wrap:wrap;}
+  .sortrow select{padding:7px 12px; border:1px solid var(--ink); background:#fff; font-size:13px; font-family:inherit;}
+  .hit{font-size:12px; color:var(--meta);}
+  .hit .num{font-size:20px; font-weight:700; color:var(--ink); letter-spacing:0.02em;}
+
+  /* ===== cards ===== */
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:32px 28px; margin-top:8px;}
+  @media(min-width:1240px){.grid{grid-template-columns:repeat(4,1fr);}}
+  @media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr);}}
+  .card{background:#fff; cursor:pointer;}
+  .card:hover h3{text-decoration:underline;}
+  .thumb{position:relative; background:var(--ph); overflow:hidden;}
+  .thumb svg{display:block; width:100%; height:100%;}
+  .thumb img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1;}
+  .card .thumb{height:150px; margin-bottom:10px;}
+  .card .cat{color:var(--meta); margin-bottom:6px; display:block;}
+  .card h3{font-size:20px; font-weight:700; line-height:1.6; color:var(--ink); margin-bottom:6px;}
+  .meta-row{display:flex; justify-content:space-between; align-items:flex-end; font-size:11px; color:var(--meta); margin-top:4px;}
+  .phase{display:inline-block; padding:2px 10px; border:1px solid var(--ink);}
+  .phase.p1{color:var(--ink); background:#fff;}
+  .phase.p2{color:#fff; background:var(--meta); border-color:var(--meta);}
+  .phase.p3{color:#fff; background:var(--ink);}
+
+  /* ===== 詳細 ===== */
+  .d-hero{height:340px; margin:0 -20px 24px; background:var(--ph); position:relative; overflow:hidden;}
+  .d-hero svg{display:block; width:100%; height:100%;}
+  .d-hero img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1;}
+  .photo-credit{position:absolute; right:10px; bottom:8px; z-index:2; background:rgba(0,0,0,.65); color:#fff; font-size:9px; padding:2px 8px;}
+  .photo-credit a{color:#fff;}
+  .d-title{font-size:32px; font-weight:700; line-height:1.625; color:var(--ink); margin:8px 0 6px;}
+  .d-tags{color:var(--meta); margin:8px 0;}
+  .d-cols{display:grid; grid-template-columns:2fr 1fr; gap:48px; margin-top:28px;}
+  @media(max-width:800px){.d-cols{grid-template-columns:1fr;}}
+  .panel{margin-bottom:36px;}
+  .panel h4{font-size:18px; font-weight:700; line-height:1.556; color:var(--ink); margin-bottom:8px;}
+  .panel .h-label{color:var(--meta); display:block; margin-bottom:4px;}
+  .panel p{font-size:15px; color:var(--body); margin-bottom:8px;}
+  .panel ul{margin:4px 0 8px 20px; font-size:15px; color:var(--body);}
+  .panel ul li{margin-bottom:4px;}
+  .linkline{font-size:14px; color:var(--body); text-decoration:underline; margin:6px 0; display:block; cursor:pointer;}
+  /* リンク先のOG画像/ページプレビュー付きカード */
+  .oglink{display:flex; gap:12px; margin:10px 0; text-decoration:none; color:inherit; align-items:center;}
+  .oglink .ogthumb{display:block; width:130px; height:74px; flex-shrink:0; background:var(--ph); position:relative; overflow:hidden; border:1px solid var(--line-soft);}
+  .oglink .ogthumb img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top;}
+  .oglink .t{font-size:13px; color:var(--body); line-height:1.5;}
+  .oglink .t small{color:var(--meta); display:block; font-size:10px;}
+  .oglink:hover .t{text-decoration:underline;}
+  /* PC表示ではリンクカードを2列組、広い画面では最大3列組に */
+  @media(min-width:800px){
+    .linkcols{display:grid; grid-template-columns:1fr 1fr; gap:0 28px; align-items:start;}
+  }
+  @media(min-width:1240px){
+    .linkcols{grid-template-columns:1fr 1fr 1fr; gap:0 24px;}
+    .linkcols .oglink .ogthumb{width:110px; height:64px;}
+    .linkcols .yt .ytthumb{width:110px; height:64px;}
+  }
+  .ldom{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--meta); font-size:11px; padding:0 10px; text-align:center; word-break:break-all;}
+  .yt{display:flex; gap:12px; margin:12px 0; text-decoration:none; color:inherit;}
+  .yt .ytthumb{width:130px; height:74px; flex-shrink:0; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:22px;}
+  .yt .t{font-size:13px; color:var(--body);}
+  .yt .t small{color:var(--meta); display:block;}
+  .yt:hover .t{text-decoration:underline;}
+  .gauge{display:flex; gap:3px; margin:6px 0 14px;}
+  .gauge i{width:24px; height:10px; background:#fff; border:1px solid var(--ink);}
+  .gauge i.f{background:var(--ink);}
+  .phasebar{display:flex; margin:6px 0 14px; text-align:center;}
+  .phasebar span{flex:1; padding:6px 2px; border:1px solid var(--ink); border-left:none; color:var(--meta); font-size:10px;}
+  .phasebar span:first-child{border-left:1px solid var(--ink);}
+  .phasebar span.cur{background:var(--ink); color:#fff; font-weight:700;}
+  .minimap{position:relative; height:150px; background:#fff; border:1px solid var(--ink); cursor:pointer;}
+  .minimap .dot{position:absolute; width:12px; height:12px; background:var(--ink); border-radius:50%; transform:translate(-50%,50%);}
+  .minimap .ax{position:absolute; font-size:9px; color:var(--meta);}
+  .cta{display:inline-block; background:var(--ink); color:#fff; font-size:12px; font-weight:700; padding:9px 20px; cursor:pointer; margin-top:6px;}
+  .relcard{display:flex; gap:12px; margin-bottom:14px; cursor:pointer; align-items:center;}
+  .relcard .thumb{width:110px; height:64px; flex-shrink:0;}
+  .relcard h3{font-size:15px; font-weight:700; color:var(--ink);}
+  .relcard:hover h3{text-decoration:underline;}
+
+  /* ===== マップ(軸・象限ラベルは枠外に配置) ===== */
+  .map-outer{margin-top:16px;}
+  .map-zrow{display:flex; justify-content:space-between; color:var(--ink); font-weight:700; padding:6px 2px; margin-left:34px;}
+  .map-mid{display:flex; gap:10px; align-items:stretch;}
+  .map-ylab{writing-mode:vertical-rl; text-align:center; color:var(--ink); font-weight:700; width:24px; display:flex; align-items:center; justify-content:center;}
+  .map-xlab{text-align:center; color:var(--ink); font-weight:700; padding:8px 0 0; margin-left:34px;}
+  .map-wrap{background:#fff; border:1px solid var(--ink); position:relative; height:520px; flex:1;}
+  .quad{position:absolute; width:50%; height:50%; border:1px dashed var(--line-soft);}
+  /* 番号付きマーカー: ラベルは地図上に置かず、凡例リストと対応させる */
+  .map-dot{position:absolute; transform:translate(-50%,50%); cursor:pointer; z-index:2;}
+  .map-dot i{display:flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; border:1.5px solid var(--ink); font-style:normal; font-size:11px; font-weight:700; font-family:ui-monospace,"Courier New",monospace;}
+  .map-dot.p1 i{background:#fff; color:var(--ink);}
+  .map-dot.p2 i{background:var(--meta); border-color:var(--meta); color:#fff;}
+  .map-dot.p3 i{background:var(--ink); color:#fff;}
+  .map-dot b{display:none; position:absolute; left:50%; bottom:130%; transform:translateX(-50%); font-size:11px; font-weight:400; color:#fff; background:var(--ink); padding:3px 10px; white-space:nowrap; z-index:5;}
+  .map-dot b::after{content:""; position:absolute; left:50%; top:100%; transform:translateX(-50%); border:5px solid transparent; border-top-color:var(--ink);}
+  .map-dot:hover b{display:block;}
+  .map-dot:hover i{outline:3px solid rgba(0,0,0,.2);}
+  .map-index{display:grid; grid-template-columns:repeat(3,1fr); gap:6px 20px; margin-top:16px;}
+  @media(max-width:800px){.map-index{grid-template-columns:repeat(2,1fr);}}
+  .map-index .mi{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--body); cursor:pointer; padding:3px 0;}
+  .map-index .mi:hover{text-decoration:underline;}
+  .map-index .mi i{flex-shrink:0; display:flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; border:1.5px solid var(--ink); font-style:normal; font-size:10px; font-weight:700; font-family:ui-monospace,"Courier New",monospace;}
+  .map-index .mi.p1 i{background:#fff; color:var(--ink);}
+  .map-index .mi.p2 i{background:var(--meta); border-color:var(--meta); color:#fff;}
+  .map-index .mi.p3 i{background:var(--ink); color:#fff;}
+  .axis-x,.axis-y{position:absolute; color:var(--ink); font-weight:700; font-size:11px;}
+  .legend{display:flex; gap:18px; font-size:11px; color:var(--meta); margin-top:12px; align-items:center; flex-wrap:wrap;}
+  .legend i{display:inline-block; width:10px; height:10px; border-radius:50%; border:1px solid var(--ink); margin-right:5px; vertical-align:middle;}
+
+
+  footer.wf{margin-top:64px; padding:24px 0; border-top:1px solid var(--ink); font-size:11px; color:var(--meta); line-height:1.455;}
+
+  /* ===== LINKS / STUDIO ページ(ビジュアルグリッド) ===== */
+  .links-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:24px 20px; margin-top:16px;}
+  @media(min-width:1240px){.links-grid{grid-template-columns:repeat(5,1fr);}}
+  @media(max-width:900px){.links-grid{grid-template-columns:repeat(2,1fr);}}
+  .lcard{display:block; text-decoration:none; color:inherit;}
+  .lcard .lthumb{display:block; position:relative; height:120px; background:var(--ph); overflow:hidden; border:1px solid var(--line-soft); margin-bottom:8px;}
+  .lcard .lthumb img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top;}
+  .lcard .lcat{position:absolute; left:0; top:0; z-index:2; background:var(--ink); color:#fff; font-size:9px; padding:2px 8px;}
+  .lcard h3{font-size:13px; font-weight:700; line-height:1.5; color:var(--ink); margin-bottom:2px;}
+  .lcard:hover h3{text-decoration:underline;}
+  .lcard .lmeta{font-size:10px; color:var(--meta);}
+  .lcard .ltech{font-size:10px; color:var(--body); border:1px solid var(--line-soft); display:inline-block; padding:0 6px; margin-top:4px; cursor:pointer;}
+  .lcard .ltech:hover{background:var(--ink); color:#fff;}
+
+  /* ===== スマートフォン調整(見切れ防止) ===== */
+  @media(max-width:600px){
+    .screen{padding:0 14px 64px;}
+    /* ヘッダー: ロゴ→ナビ(横スクロール)→検索 の3段構成 */
+    .site-header{gap:12px; padding-top:14px; padding-bottom:14px;}
+    .logo{font-size:17px;}
+    .gnav{order:2; width:100%; flex-wrap:nowrap; overflow-x:auto; gap:18px; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+    .gnav::-webkit-scrollbar{display:none;}
+    .gnav a{white-space:nowrap; flex-shrink:0;}
+    .searchbar{order:3; width:100%; min-width:0;}
+    /* 見出し・本文 */
+    .sec-label{margin-top:26px;}
+    h2.sec{font-size:22px; line-height:1.5;}
+    h2.sec small{display:block; margin:4px 0 0;}
+    .d-title{font-size:22px; line-height:1.5;}
+    .d-hero{height:190px; margin:0 -14px 18px;}
+    .d-cols{gap:28px;}
+    .panel p, .panel ul{font-size:14px;}
+    /* チップ */
+    .chips{gap:6px;}
+    .chip{padding:4px 10px; font-size:11px;}
+    /* カード */
+    .grid{gap:20px 14px;}
+    .card .thumb{height:104px;}
+    .card h3{font-size:14px; line-height:1.5;}
+    .card .cat{font-size:9px;}
+    .meta-row{font-size:10px;}
+    /* リンクカード */
+    .oglink .ogthumb{width:104px; height:60px;}
+    .oglink .t{font-size:12px;}
+    .yt .ytthumb{width:104px; height:60px;}
+    .links-grid{gap:18px 12px;}
+    .lcard .lthumb{height:96px;}
+    /* マップ: 枠を低くし、hoverツールチップは無効(タップは詳細へ遷移) */
+    .map-wrap{height:380px;}
+    .map-dot i{width:20px; height:20px; font-size:10px;}
+    .map-dot b{display:none !important;}
+    .map-zrow{margin-left:26px; font-size:9px;}
+    .map-xlab{margin-left:26px;}
+    .map-ylab{width:18px; font-size:9px;}
+    .map-index{grid-template-columns:1fr; gap:4px;}
+    .minimap{height:110px;}
+    footer.wf{margin-top:40px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 01 一覧 ============ -->
+<div class="screen active" id="s-home">
+  <div class="site-header">
+    <div class="logo" onclick="go('home')">TECHNOLOGY ARCHIVE<small class="mono">Creative × Technology Intelligence</small></div>
+    <nav class="gnav mono">
+      <a class="on" onclick="go('home')">Archive</a><a onclick="goLinks()">Links</a><a onclick="goStudio()">Studio</a><a onclick="goEquip()">Equipment</a></nav>
+    <input type="search" class="searchbar mono" placeholder="Search — 技術名・キーワード(例: 点群 / IOWN / ジェネレーティブ)">
+  </div>
+
+  <div class="sec-label mono">Filter by Technology</div>
+  <h2 class="sec">技術タグで絞り込み</h2>
+  <div class="chips mono" id="tagchips">
+    <span class="chip on" data-t="all">すべて</span>
+    <span class="chip" data-t="pm">#プロジェクションマッピング</span>
+    <span class="chip" data-t="xr">#XR/VR/メタバース</span>
+    <span class="chip" data-t="ai">#AI/ジェネレーティブ</span>
+    <span class="chip" data-t="dt">#デジタルツイン</span>
+    <span class="chip" data-t="net">#IOWN/6G/低遅延伝送</span>
+    <span class="chip" data-t="pc">#点群/ボリュメトリック</span>
+    <span class="chip" data-t="led">#大型LED/DOOH</span>
+    <span class="chip" data-t="drone">#ドローン</span>
+    <span class="chip" data-t="haptic">#ハプティクス/五感</span>
+    <span class="chip" data-t="holo">#ホログラム</span>
+    <span class="chip" data-t="viz">#データビジュアライズ</span>
+    <span class="chip" data-t="sensing">#センシング/トラッキング</span>
+    <span class="chip" data-t="audio">#空間音響</span>
+    <span class="chip" data-t="vp">#バーチャルプロダクション</span>
+    <span class="chip" data-t="interactive">#インタラクティブ/参加型</span>
+    <span class="chip" data-t="avatar">#アバター/デジタルヒューマン</span>
+    <span class="chip" data-t="gs">#3Dガウシアンスプラッティング</span>
+    <span class="chip" data-t="kinetic">#キネティック/ライト</span>
+    <span class="chip" data-t="robot">#ロボットアーム</span>
+    <span class="chip" data-t="tangible">#タンジブルディスプレイ</span>
+  </div>
+
+  <div class="sortrow">
+    <select id="sortsel">
+      <option value="ready" selected>ソート: 社会実装度が高い順</option>
+      <option value="new">ソート: 最新順</option>
+      <option value="hot">ソート: 注目順(閲覧数)</option>
+      <option value="rand">ソート: ランダム(セレンディピティ)</option>
+      <option value="easy">ソート: 実装難易度が低い順</option>
+    </select>
+    <span class="hit mono" id="hitcnt"></span>
+  </div>
+
+  <div class="sec-label mono">Browse by Experience</div>
+  <h2 class="sec">体験から探す</h2>
+  <div class="grid" id="cardgrid"></div>
+
+  <footer class="wf">© TECHNOLOGY ARCHIVE</footer>
+</div>
+
+<!-- ============ 02 詳細(データ駆動テンプレート) ============ -->
+<div class="screen" id="s-detail">
+  <div class="site-header">
+    <div class="logo" onclick="go('home')">TECHNOLOGY ARCHIVE<small class="mono">Creative × Technology Intelligence</small></div>
+    <nav class="gnav mono">
+      <a class="on" onclick="go('home')">Archive</a><a onclick="goLinks()">Links</a><a onclick="goStudio()">Studio</a><a onclick="goEquip()">Equipment</a></nav>
+    <input type="search" class="searchbar mono" placeholder="Search — 技術名・キーワード(例: 点群 / IOWN / ジェネレーティブ)">
+  </div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin:14px 0 6px;">
+    <a class="mono" style="color:var(--meta); cursor:pointer;" onclick="go('home')">← Back to Archive</a>
+    <span class="mono" style="color:var(--meta);">Bookmark ☆ | Share 🔗</span>
+  </div>
+
+  <div class="d-hero" id="d-hero"></div>
+  <span class="phase mono" id="d-phase"></span>
+  <div class="d-title" id="d-title"></div>
+  <div class="d-tags mono" id="d-tagline"></div>
+  <div class="caption mono" id="d-meta"></div>
+
+  <div class="d-cols">
+    <div>
+      <div class="panel">
+        <span class="h-label mono">Summary</span>
+        <h4>概要</h4>
+        <p id="d-sum"></p>
+      </div>
+      <div class="panel">
+        <span class="h-label mono">Verification Report</span>
+        <h4>技術検証レポート</h4>
+        <p id="d-verify"></p>
+        <a class="linkline">📄 検証レポート全文(準備中)</a>
+      </div>
+      <div class="panel">
+        <span class="h-label mono">Barriers</span>
+        <h4>導入の障壁</h4>
+        <ul id="d-barriers"></ul>
+      </div>
+      <div class="panel">
+        <span class="h-label mono">Foresight</span>
+        <h4>将来予測(編集部考察)</h4>
+        <p id="d-foresight"></p>
+      </div>
+      <div class="panel">
+        <span class="h-label mono">Links</span>
+        <h4>関連リンク</h4>
+        <div class="linkcols" id="d-links"></div>
+        <h4 style="margin-top:20px;">YouTube参考動画</h4>
+        <div class="linkcols" id="d-yt"></div>
+        <h4 style="margin-top:20px;">海外実績</h4>
+        <div class="linkcols" id="d-intl"></div>
+        <h4 style="margin-top:20px;">日本国内実績</h4>
+        <div class="linkcols" id="d-domestic"></div>
+        <h4 style="margin-top:20px;">実現パートナー</h4>
+        <div class="linkcols" id="d-partners"></div>
+      </div>
+      <div class="panel">
+        <span class="h-label mono">Index</span>
+        <h4>実装難易度 × 社会実装度</h4>
+        <div class="caption">実装難易度(実現に必要な技術・コストのハードル)</div>
+        <div class="gauge" id="d-gauge"></div>
+        <div class="caption">社会実装度(現在のフェーズ)</div>
+        <div class="phasebar mono" id="d-phasebar"></div>
+      </div>
+      <div class="panel">
+        <span class="h-label mono">Related</span>
+        <h4>関連技術(類似・組み合わせ候補)</h4>
+        <div id="d-rel"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel" id="d-gear-panel">
+        <span class="h-label mono">Equipment / Partners</span>
+        <h4>機材・調達パートナー</h4>
+        <div class="caption" id="d-gearnote"></div>
+        <div id="d-gear"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 02b LINKS(ビジュアル・インスピレーション) ============ -->
+<div class="screen" id="s-links">
+  <div class="site-header">
+    <div class="logo" onclick="go('home')">TECHNOLOGY ARCHIVE<small class="mono">Creative × Technology Intelligence</small></div>
+    <nav class="gnav mono">
+      <a onclick="go('home')">Archive</a><a class="on" onclick="goLinks()">Links</a><a onclick="goStudio()">Studio</a><a onclick="goEquip()">Equipment</a></nav>
+    <input type="search" class="searchbar mono" placeholder="Search — 技術名・キーワード(例: 点群 / IOWN / ジェネレーティブ)">
+  </div>
+  <div class="sec-label mono">Visual Inspiration</div>
+  <h2 class="sec">LINKS<small>全技術の参考リンク一覧</small></h2>
+  <div class="caption mono" style="margin-top:16px;">Category</div>
+  <div class="chips mono" id="lcatchips">
+    <span class="chip on" data-c="all">すべて</span>
+    <span class="chip" data-c="links">関連リンク</span>
+    <span class="chip" data-c="yt">YouTube参考動画</span>
+    <span class="chip" data-c="intl">海外実績</span>
+    <span class="chip" data-c="domestic">日本国内実績</span>
+    <span class="chip" data-c="partners">実現パートナー</span>
+  </div>
+  <div class="caption mono" style="margin-top:12px;">Technology</div>
+  <div class="chips mono" id="ltagchips">
+    <span class="chip on" data-t="all">すべて</span>
+  </div>
+  <div class="caption mono" style="margin-top:12px;">Scene</div>
+  <div class="chips mono" id="lscenechips">
+    <span class="chip on" data-u="all">すべて</span>
+    <span class="chip" data-u="event">イベント演出</span>
+    <span class="chip" data-u="live">音楽ライブ</span>
+    <span class="chip" data-u="sports">スポーツ観戦</span>
+    <span class="chip" data-u="museum">展覧会/ミュージアム</span>
+    <span class="chip" data-u="retail">体験型店舗/ショールーム</span>
+    <span class="chip" data-u="city">都市/防災/観光</span>
+  </div>
+  <div class="sortrow">
+    <button class="chip mono" id="lshuffle" style="border:1px solid var(--ink); background:#fff; cursor:pointer;">⤮ シャッフル</button>
+    <span class="hit mono" id="lhit"></span>
+  </div>
+  <div class="links-grid" id="linksgrid"></div>
+</div>
+
+<!-- ============ 02c STUDIO(クリエイティブスタジオ一覧) ============ -->
+<div class="screen" id="s-studio">
+  <div class="site-header">
+    <div class="logo" onclick="go('home')">TECHNOLOGY ARCHIVE<small class="mono">Creative × Technology Intelligence</small></div>
+    <nav class="gnav mono">
+      <a onclick="go('home')">Archive</a><a onclick="goLinks()">Links</a><a class="on" onclick="goStudio()">Studio</a><a onclick="goEquip()">Equipment</a></nav>
+    <input type="search" class="searchbar mono" placeholder="Search — 技術名・キーワード(例: 点群 / IOWN / ジェネレーティブ)">
+  </div>
+  <div class="sec-label mono">Creative Studios & Partners</div>
+  <h2 class="sec">STUDIO<small>クリエイティブ×テクノロジーのスタジオ・企業リスト。競合調査と協業先探しの起点</small></h2>
+  <div class="caption mono" style="margin-top:16px;">Category</div>
+  <div class="chips mono" id="scatchips">
+    <span class="chip uc on" data-c="all">全カテゴリ</span>
+    <span class="chip uc" data-c="exp">体験デザイン/演出</span>
+    <span class="chip uc" data-c="visual">映像・ビジュアル</span>
+    <span class="chip uc" data-c="gear">機材・プロダクション</span>
+    <span class="chip uc" data-c="ai">AI・R&amp;D</span>
+    <span class="chip uc" data-c="drone">ドローン</span>
+    <span class="chip uc" data-c="venue">施設・ベニュー</span>
+  </div>
+  <div class="caption mono" style="margin-top:12px;">Region</div>
+  <div class="chips mono" id="sregchips">
+    <span class="chip on" data-r="all">すべて</span>
+    <span class="chip" data-r="jp">日本</span>
+    <span class="chip" data-r="global">海外</span>
+  </div>
+  <div class="sortrow"><span class="hit mono" id="shit"></span></div>
+  <div class="links-grid" id="studiogrid"></div>
+</div>
+
+<!-- ============ 02d EQUIPMENT(機材会社リスト) ============ -->
+<div class="screen" id="s-equipment">
+  <div class="site-header">
+    <div class="logo" onclick="go('home')">TECHNOLOGY ARCHIVE<small class="mono">Creative × Technology Intelligence</small></div>
+    <nav class="gnav mono">
+      <a onclick="go('home')">Archive</a><a onclick="goLinks()">Links</a><a onclick="goStudio()">Studio</a><a class="on" onclick="goEquip()">Equipment</a></nav>
+    <input type="search" class="searchbar mono" placeholder="Search — 技術名・キーワード(例: 点群 / IOWN / ジェネレーティブ)">
+  </div>
+  <div class="sec-label mono">Equipment & Technical Production</div>
+  <h2 class="sec">EQUIPMENT<small>機材の販売・レンタル・テクニカルプロダクション。調達先探しの起点</small></h2>
+  <div class="caption mono" style="margin-top:16px;">Category</div>
+  <div class="chips mono" id="ecatchips">
+    <span class="chip uc on" data-c="all">全カテゴリ</span>
+    <span class="chip uc" data-c="led">LEDビジョン/サイネージ</span>
+    <span class="chip uc" data-c="projector">プロジェクター</span>
+    <span class="chip uc" data-c="audio">音響</span>
+    <span class="chip uc" data-c="server">メディアサーバー/制御</span>
+    <span class="chip uc" data-c="holo">ホログラム</span>
+    <span class="chip uc" data-c="kinetic">キネティック</span>
+    <span class="chip uc" data-c="vol">ボリュメトリック</span>
+    <span class="chip uc" data-c="rental">レンタル/オペレーション</span>
+    <span class="chip uc" data-c="vp">バーチャルプロダクション</span>
+    <span class="chip uc" data-c="light">照明</span>
+    <span class="chip uc" data-c="sfx">特殊効果</span>
+  </div>
+  <div class="caption mono" style="margin-top:12px;">Region</div>
+  <div class="chips mono" id="eregchips">
+    <span class="chip on" data-r="all">すべて</span>
+    <span class="chip" data-r="jp">日本</span>
+    <span class="chip" data-r="global">海外</span>
+  </div>
+  <div class="sortrow"><span class="hit mono" id="ehit"></span></div>
+  <div class="links-grid" id="equipgrid"></div>
+</div>
+
+<script src="assets/og/og-map.js"></script>
+<script>
+// ============================================================
+// SVGジェネレーティブサムネイル(モノトーン)
+// ============================================================
+function svgThumb(pat, seed, w, h){
+  w=w||400; h=h||220;
+  const g=[]; let rnd=seed*9301+49297;
+  const R=()=>{rnd=(rnd*9301+49297)%233280; return rnd/233280;};
+  const gray=v=>`rgb(${v},${v},${v})`;
+  if(pat==="dots"){
+    for(let i=0;i<220;i++){const x=R()*w,y=R()*h,r=R()*2.4+0.4,v=Math.floor(R()*160);
+      g.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${gray(v)}"/>`);}
+  }else if(pat==="grid"){
+    const cw=w/14, ch=h/8;
+    for(let i=0;i<14;i++)for(let j=0;j<8;j++){if(R()>0.42)continue;const v=Math.floor(R()*200);
+      g.push(`<rect x="${(i*cw+1).toFixed(1)}" y="${(j*ch+1).toFixed(1)}" width="${cw-2}" height="${ch-2}" fill="${gray(v)}"/>`);}
+  }else if(pat==="wave"){
+    for(let k=0;k<7;k++){const v=Math.floor(R()*140)+30; let d=`M0 ${h/2}`;
+      for(let x=0;x<=w;x+=12){d+=` L${x} ${(h/2+Math.sin(x/28+k*1.4)*(14+k*8)*(0.5+R()*0.5)).toFixed(1)}`;}
+      g.push(`<path d="${d}" stroke="${gray(v)}" fill="none" stroke-width="1.4"/>`);}
+  }else if(pat==="scan"){
+    for(let y=0;y<h;y+=7){const v=Math.floor(R()*210);
+      g.push(`<rect x="0" y="${y}" width="${(R()*w).toFixed(0)}" height="3.4" fill="${gray(v)}"/>`);}
+  }else if(pat==="orbit"){
+    for(let i=0;i<9;i++){const cx=w/2,cy=h*1.15,r=40+i*26,v=Math.floor(R()*150)+20;
+      g.push(`<circle cx="${cx}" cy="${cy}" r="${r}" stroke="${gray(v)}" fill="none" stroke-width="1"/>`);
+      const a=R()*Math.PI; g.push(`<circle cx="${(cx+Math.cos(a)*r).toFixed(1)}" cy="${(cy-Math.abs(Math.sin(a))*r).toFixed(1)}" r="3.2" fill="#000"/>`);}
+  }else if(pat==="iso"){
+    for(let i=0;i<10;i++){const v=Math.floor(R()*170)+30; let d=`M0 ${(R()*h).toFixed(0)}`;
+      for(let x=0;x<=w;x+=40){d+=` Q${x+20} ${(R()*h).toFixed(0)} ${x+40} ${(R()*h).toFixed(0)}`;}
+      g.push(`<path d="${d}" stroke="${gray(v)}" fill="none" stroke-width="1.2"/>`);}
+  }else if(pat==="voxel"){
+    for(let i=0;i<70;i++){const s=R()*26+6,x=R()*w,y=R()*h,v=Math.floor(R()*190);
+      g.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${s.toFixed(1)}" height="${s.toFixed(1)}" fill="none" stroke="${gray(v)}" stroke-width="1"/>`);}
+  }else if(pat==="noise"){
+    for(let i=0;i<400;i++){const x=R()*w,y=R()*h,v=Math.floor(R()*220);
+      g.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(R()*9+1).toFixed(1)}" height="2" fill="${gray(v)}"/>`);}
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><rect width="${w}" height="${h}" fill="#f2f2f2"/>${g.join("")}</svg>`;
+}
+
+// ============================================================
+// ヘルパー
+// ============================================================
+const yt=q=>`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
+const wm=f=>`https://commons.wikimedia.org/wiki/Special:FilePath/${f}?width=1000`;
+const wmPage=f=>`https://commons.wikimedia.org/wiki/File:${f}`;
+// リンク先の実画像: 確認済みog:imageを優先、無いサイトはページのライブプレビュー(thum.io)を表示
+const OG_IMAGES={
+  "https://www.thesphere.com/":"https://us-east-1-msg.graphassets.com/ALB6wy2xYSoCFY4hrWCvsz/va1VYeTxRoyeB4tfLhlt",
+  "https://abbavoyage.com/":"https://abbavoyage.com/content/uploads/2022/04/av_og.jpg",
+  "https://lightroom.uk/":"https://images.lightroom.uk/uploads/2022/11/LR-Logo-Black-background.jpg?fit=1024%2C1024",
+  "https://www.hibino.co.jp/":"https://www.hibino.co.jp/assets/img/sns/og-image.png",
+  "https://www.hibino.co.jp/visual/":"https://www.hibino.co.jp/assets/img/sns/og-image.png",
+  "https://www.hibino.co.jp/connect/thoughts/2506_cross-sinjuku-vision.html":"https://www.hibino.co.jp/assets/img/sns/og-image.png",
+  "https://www.prg.com/ja-jp/":"https://www.prg.com/-/media/Emea-Apac/Images/General/Logo/logo/PRG_Logo_RGB_1920px.ashx?h=1059&iar=0&w=1920&hash=8C326177582C97EC15112B1991E677A4",
+  "https://prty.jp/":"https://prty.jp/images/ogp.jpg",
+  "https://rhizomatiks.com/":"https://rhizomatiks.com/wp-content/uploads/2021/01/rhizomatiks.png",
+  "https://www.1-10.com/":"https://www.1-10.com/assets/img/common/ogp.png",
+  "https://bascule.co.jp/":"https://bascule.co.jp/images/ogp20230214.jpg",
+  "https://dentsulab.tokyo/":"https://dlt2.jpn.org/wp-content/uploads/2025/10/og.jpg",
+  "https://www.w0w.co.jp/":"https://www.w0w.co.jp/ogp/ogp.png",
+  "https://www.w0w.co.jp/works":"https://www.w0w.co.jp/ogp/ogp.png",
+  "https://www.unit9.com/":"https://www.unit9.com/wp-content/themes/unit9/images/ogimage.png",
+  "https://www.unit9.com/vr":"https://www.unit9.com/wp-content/themes/unit9/images/ogimage.png",
+  "https://www.unit9.com/work":"https://www.unit9.com/wp-content/themes/unit9/images/ogimage.png",
+  "https://www.unit9.com/experiential":"https://www.unit9.com/wp-content/themes/unit9/images/ogimage.png",
+  "https://www.unit9.com/real-time-vfx":"https://www.unit9.com/wp-content/themes/unit9/images/ogimage.png",
+  "https://www.hovercraftstudio.com/":"https://www.hovercraftstudio.com/opengraph-image.png?opengraph-image.4275a256.png",
+  "https://www.hovercraftstudio.com/about":"https://www.hovercraftstudio.com/opengraph-image.png?opengraph-image.4275a256.png",
+  "https://phygi.tech/":"https://phygi.tech/media/site/8d4b45e5f4-1658423115/preview_site.jpg",
+  "https://www.sonypcl.jp/":"https://www.sonypcl.jp/assets/img/common/ogimage.png",
+  "https://www.sonypcl.jp/technology/":"https://www.sonypcl.jp/assets/img/common/ogimage.png",
+  "https://lookingglassfactory.com/":"https://cdn.prod.website-files.com/6287baba42d48260dec3a37a/69b0dd694c6b84f4eb5ae9da_HLD-7-image8.jpg",
+  "https://phantom-3d.net/":"https://phantom-3d.net/images/og-image-default.jpg",
+  "https://mplpl.com/":"https://firebasestorage.googleapis.com/v0/b/mplpl-hp-main.appspot.com/o/system%2Fogp-image.png?alt=media&token=09f01ec4-b12a-4be3-b3b9-0d8360a8dbae",
+  "https://txd.jp/":"https://txd.jp/common/img/ogp.png",
+  "https://www.takenaka-co.co.jp/":"https://www.takenaka-co.co.jp/2021/images/common/og-img_v4.png",
+  "https://led-tokyo.jp/":"https://led-tokyo.jp/wp-content/uploads/2023/04/ogp_led.jpg",
+  "https://www.fyilight.com/ja/":"https://www.fyilight.com/upload/img/GY167936927483/projects-01.jpg?x-oss-process=image/format,webp/quality,Q_100",
+  "https://www.sosolimited.com/":"https://storage.googleapis.com/sosodotcom-cms/16elevator_2_6ff0bf9b3e/16elevator_2_6ff0bf9b3e.jpg",
+  "https://studionowhere.com/":"https://studionowhere.com/wp-content/uploads/2020/02/WechatIMG642.jpeg",
+};
+const ogPreview=u=>OG_IMAGES[u]||`https://image.thum.io/get/width/520/crop/600/noanimate/${u}`;
+
+// ============================================================
+// プレビュー画像の多段フォールバック
+// OG画像(既知) → thum.io(ページプレビュー) → ファビコン → ドメイン表示
+// 画像側のホットリンク制限対策として referrerpolicy="no-referrer" を付与
+// ============================================================
+function previewSources(u){
+  const dom=u.replace(/^https?:\/\//,"").split("/")[0];
+  const arr=[];
+  // ローカル保存済みOG画像(assets/og/)を最優先。URL完全一致→ドメイン一致の順
+  if(window.LOCAL_OG){
+    if(window.LOCAL_OG[u]) arr.push(window.LOCAL_OG[u]);
+    else if(window.LOCAL_OG[dom]) arr.push(window.LOCAL_OG[dom]);
+  }
+  if(OG_IMAGES[u]) arr.push(OG_IMAGES[u]);
+  arr.push(`https://image.thum.io/get/width/520/crop/600/noanimate/${u}`);
+  arr.push(`https://www.google.com/s2/favicons?domain=${dom}&sz=128`);
+  return arr;
+}
+function pvImg(u, style){
+  const srcs=previewSources(u);
+  return `<img src="${srcs[0]}" data-url="${u}" data-fb='${JSON.stringify(srcs.slice(1))}' alt="" loading="lazy" referrerpolicy="no-referrer" style="${style||""}" onerror="pvNext(this)">`;
+}
+
+// ============================================================
+// SNS風OGP解決: リンク先HTMLからog:imageを動的取得(CORSプロキシ経由)
+// 取得結果は7日間localStorageにキャッシュ。失敗時は従来のフォールバックのまま
+// ============================================================
+function ogCacheGet(u){ try{const v=localStorage.getItem("ogimg:"+u); if(!v) return null; const o=JSON.parse(v); if(Date.now()-o.t>7*864e5) return null; return o.v;}catch(e){return null;} }
+function ogCacheSet(u,v){ try{localStorage.setItem("ogimg:"+u,JSON.stringify({v:v,t:Date.now()}));}catch(e){} }
+async function fetchOG(u){
+  const cached=ogCacheGet(u); if(cached!==null) return cached||null;
+  try{
+    const ctrl=new AbortController(); const tm=setTimeout(()=>ctrl.abort(),12000);
+    const res=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(u),{signal:ctrl.signal});
+    clearTimeout(tm);
+    if(!res.ok) throw 0;
+    const t=await res.text();
+    let m=t.match(/<meta[^>]+(?:property|name)=["'](?:og:image|twitter:image)(?::src|:secure_url)?["'][^>]*content=["']([^"']+)["']/i)
+        ||t.match(/<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)/i);
+    let img=m?m[1].replace(/&amp;/g,"&"):"";
+    if(img){ try{ img=new URL(img,u).href; }catch(e){ img=""; } }
+    ogCacheSet(u,img||"");
+    return img||null;
+  }catch(e){ return null; }
+}
+let ogQueue=[], ogActive=0;
+function hydrateOG(){
+  document.querySelectorAll('img[data-url]:not([data-ogq])').forEach(el=>{ el.dataset.ogq="1"; ogQueue.push(el); });
+  pumpOG();
+}
+function pumpOG(){
+  while(ogActive<3 && ogQueue.length){
+    const el=ogQueue.shift();
+    const u=el.dataset.url;
+    const dm=u?u.replace(/^https?:\/\//,"").split("/")[0]:"";
+    if(!u || OG_IMAGES[u] || (window.LOCAL_OG && (window.LOCAL_OG[u]||window.LOCAL_OG[dm]))) continue; // ローカル/既知OGは解決不要
+    ogActive++;
+    fetchOG(u).then(img=>{
+      if(img && document.contains(el)){
+        // og:imageが取れたら差し替え。以降のエラー時は従来チェーンに戻す
+        el.style.display=""; el.style.objectFit="cover"; el.style.padding="0"; el.style.background="";
+        el.dataset.fb=JSON.stringify([
+          `https://image.thum.io/get/width/520/crop/600/noanimate/${u}`,
+          `https://www.google.com/s2/favicons?domain=${u.replace(/^https?:\/\//,"").split("/")[0]}&sz=128`
+        ]);
+        el.src=img;
+      }
+    }).finally(()=>{ ogActive--; pumpOG(); });
+  }
+}
+function pvNext(el){
+  try{
+    const fb=JSON.parse(el.dataset.fb||"[]");
+    if(!fb.length){ el.style.display="none"; return; }
+    const next=fb.shift();
+    el.dataset.fb=JSON.stringify(fb);
+    if(next.includes("s2/favicons")){ el.style.objectFit="contain"; el.style.padding="18px"; el.style.background="#fff"; }
+    el.src=next;
+  }catch(e){ el.style.display="none"; }
+}
+
+// ============================================================
+// データ: 19技術(PDF・eex.co.jp・各社サイトのリサーチから構築)
+// ============================================================
+const items=[
+{id:"iown-pc", t:"動点群リアルタイム伝送(IOWN)", tags:["pc","net","xr","holo"], uc:["live","sports","event"], ph:2, diff:4, date:"2026-06-12", hot:128, pat:"dots", seed:7, imgFile:"Ouster_OS1-64_lidar_point_cloud_of_intersection_of_Folsom_and_Dore_St,_San_Francisco.png",
+ origin:"大阪・関西万博 NTTパビリオン「PARALLEL TRAVEL」",
+ sum:"被写体を点群(ポイントクラウド)として3Dデータ化し、IOWN APN(オールフォトニクス・ネットワーク)の広帯域・低遅延回線で遠隔会場へリアルタイム伝送する技術。平面映像の中継と異なり、視点を自由に動かせる「立体の生中継」が可能になり、遠隔地でも出演者がその場にいるかのような体験を実現する。",
+ verify:"大阪・関西万博NTTパビリオンZone2で動点群リアルタイム伝送の開発に参画。IGアリーナとBUNTAIの2拠点をIOWNで接続した音楽ライブでは、演者だけでなく観客同士の一体感の共有までを実証し、実証実験から社会実装フェーズへの移行を確認した。",
+ barriers:["IOWN APN回線の敷設・利用コストが高く、通信キャリア(NTT系)との連携体制が前提","点群キャプチャ用の多視点カメラ/LiDARと専用処理環境が必要","大容量3Dデータを扱えるエンジニアが国内でも希少","演出フォーマットが未確立で、企画側にも点群表現の理解が必要"],
+ foresight:"IOWNの商用展開拡大(2027年前後)に伴い、多拠点同時ライブ・遠隔スポーツ観戦の中核技術になる見込み。現時点で実案件の実績を持つプレイヤーは極めて少なく、先行実績がそのままアライアンス獲得の武器になる。1〜2年は通信キャリアとの共同実証を継続し、演出フォーマットを先に確立しておくべき領域。",
+ links:[["NTT R&D — IOWN構想 公式サイト","https://www.rd.ntt/iown/"],["IOWN×AI 没入型ライブビューイング実証 — MWC Barcelona 2026出展(NTTドコモソリューションズ)","https://www.nttcom.co.jp/news/pr26030201.html"],["IMAGICA EEX 実績・ニュース","https://eex.co.jp/news/"]],
+ yts:[["IOWN 点群伝送のデモ・解説動画を検索","IOWN 点群 リアルタイム伝送 ライブ"],["大阪・関西万博 NTTパビリオン関連動画を検索","大阪関西万博 NTTパビリオン PARALLEL TRAVEL"]],
+ intl:[["IOWN Global Forum(国際標準化団体)","https://iowngf.org/"],["Cosm — 米国の多拠点没入視聴ベニュー(先行事例)","https://www.cosm.com/"]],
+ domestic:[["超歌舞伎 Powered by IOWN(万博NTTパビリオン)","https://group.ntt/jp/expo2025/event/chokabuki/"],["IGアリーナ×BUNTAI 2拠点接続ライブ(IMAGICA EEX)","https://eex.co.jp/news/"]],
+ partners:[["NTT R&D(IOWN構想)","https://www.rd.ntt/"],["NTTドコモ","https://www.docomo.ne.jp/"],["IMAGICA EEX","https://eex.co.jp/"]],
+ decision:{go:"△ 条件付き(NTT系との連携が前提)", cost:"高(回線+機材+開発)", lead:"3〜6ヶ月(実証ベース)", contact:"@テクニカルディレクター"}},
+
+{id:"projection", t:"プロジェクションマッピング(建築物)", tags:["pm"], uc:["event","city"], ph:3, diff:2, date:"2026-05-30", hot:210, pat:"grid", seed:3, imgFile:"Projection_Mapping_in_Osu_(2014).jpg",
+ origin:"東京都庁「TOKYO Night & Light」/ 東京国際プロジェクションマッピングアワード",
+ sum:"建物の形状に合わせて映像を精密に投影し、建築物そのものをスクリーン化する演出技術。東京都庁の常設プロジェクションマッピングは「最大の建築物へのプロジェクションマッピング常設展示」としてギネス世界記録に認定され、ナイトタイムエコノミー・観光資源としての地位を確立した。",
+ verify:"東京都庁「TOKYO Night & Light」への作品制作協力、東京国際プロジェクションマッピングアワード(Vol.10で来場者1万人超)の運営を通じ、企画〜投影システム構築〜運用まで一気通貫のノウハウを保有。技術的には成熟済みで、勝負所は企画・映像クオリティに移っている。",
+ barriers:["高輝度プロジェクター(2〜4万lm級×複数台)の機材コスト","投影対象建物の許諾・道路使用/占用など行政手続き","屋外のため天候・環境光の影響を受ける","常設化する場合は保守・電力などランニングコストが継続発生"],
+ foresight:"技術としてはコモディティ化が進むが、「都市の夜間観光×常設上映」という運用モデルは拡大局面。今後の差別化はマッピング単体ではなく、インタラクティブ演出・AI生成映像・ドローン等との掛け合わせ、および自治体案件の企画提案力に移る。",
+ links:[["東京国際プロジェクションマッピングアワード 公式","https://pmaward.jp/"],["IMAGICA EEX — PMアワード Vol.8 実績","https://eex.co.jp/works/pmavol8/"]],
+ yts:[["東京都庁プロジェクションマッピングの映像を検索","東京都庁 プロジェクションマッピング TOKYO Night Light"],["国内外の建築マッピング事例を検索","projection mapping building"]],
+ intl:[["Fête des Lumières(リヨン・光の祭典)","https://www.fetedeslumieres.lyon.fr/"],["Vivid Sydney(世界最大級の光の祭典)","https://www.vividsydney.com/"]],
+ domestic:[["TOKYO Night & Light — 都庁常設マッピング(公式)","https://tokyoprojectionmappingproject.jp/"],["TOKYO LIGHTS プロジェクションマッピング国際大会","https://tokyolights.jp/"],["東京国際プロジェクションマッピングアワード","https://pmaward.jp/"]],
+ partners:[["PRG — ビデオ/プロジェクションサービス","https://www.prg.com/ja-jp/services/video"],["パナソニック コネクト(業務用プロジェクター)","https://connect.panasonic.com/"],["Christie(高輝度プロジェクター)","https://www.christiedigital.com/"],["WOW(投影コンテンツのビジュアルデザイン)","https://www.w0w.co.jp/"],["NAKED(体験型プロジェクション企画)","https://naked.co.jp/"]],
+ gearNote:"高輝度プロジェクター・メディアサーバーはレンタル調達が基本。大規模案件は360°テクニカルプロダクション会社との協業で照明・音響込みの一括手配が現実的。",
+ gear:[["PRG — ビデオ(プロジェクション/メディアサーバー)","https://www.prg.com/ja-jp/services/video"],["PRG — 照明サービス","https://www.prg.com/ja-jp/services/lighting"],["ヒビノ — コンサート・イベント大型映像","https://www.hibino.co.jp/visual/"]],
+ decision:{go:"◎ 即提案可(実績多数)", cost:"中(規模により変動大)", lead:"2〜4ヶ月", contact:"@プロデューサー"}},
+
+{id:"led-gen", t:"高精細大型LED × ジェネレーティブ映像", tags:["led","ai"], uc:["retail","event"], ph:3, diff:2, date:"2026-06-20", hot:95, pat:"scan", seed:11, imgFile:"Speed_of_Sound_LED_Screen.jpg",
+ origin:"電通本社エントランス『VERTICAL VISION』",
+ sum:"高精細大型LEDビジョンに、プログラミングによるリアルタイムレンダリング映像を常時表示する空間演出。事前レンダリングの再生ではなく生成し続けるため「同じ瞬間が二度とない」表現が可能で、毎日同じ場所を通る社員・来訪者にも飽きられないエントランス/ファサード演出として機能する。",
+ verify:"電通汐留本社エントランスの大型LED『VERTICAL VISION』でジェネレーティブコンテンツの制作を担当。TouchDesigner/Notch等のリアルタイムツールによる長期安定稼働(常時運用)の実績を確認済み。",
+ barriers:["LEDパネル本体と常時稼働システムの初期投資が大きい","リアルタイム映像ツール(TouchDesigner/Notch/Unreal Engine)を扱える人材が限られる","24時間稼働を支える保守・監視体制が必要","「生成され続ける映像」の価値をクライアントに説明するコストがかかる"],
+ foresight:"オフィスビル・商業施設のメディアファサード需要と重なり、安定した受注領域に成長する見込み。次の1〜2年で生成AIとの接続(天候・人流・ニュースなど文脈に反応するサイネージ)が標準機能化し、企画力のあるプレイヤーに案件が集中する。",
+ links:[["TouchDesigner(Derivative) 公式","https://derivative.ca/"],["Notch 公式","https://www.notch.one/"]],
+ yts:[["ジェネレーティブなLED演出事例を検索","generative art LED wall TouchDesigner"],["メディアファサード事例を検索","media facade LED building"]],
+ intl:[["Sphere(ラスベガス — 世界最大のLED球体ベニュー)","https://www.thesphere.com/"],["Outernet London(欧州最大のデジタル展示空間)","https://www.outernet.com/"],["Hovercraft(米国 — ブランドリテール/アクティベーション)","https://www.hovercraftstudio.com/"]],
+ domestic:[["クロス新宿ビジョン「3D巨大猫」(ヒビノ事例記事)","https://www.hibino.co.jp/connect/thoughts/2506_cross-sinjuku-vision.html"],["電通本社『VERTICAL VISION』(IMAGICA EEX制作)","https://eex.co.jp/news/"],["Sony PCL — 8K Crystal LED ディスプレイシステム(440インチ)","https://www.sonypcl.jp/technology/00005.html"],["WOW — 空間演出・サイネージのビジュアルデザイン事例","https://www.w0w.co.jp/works"]],
+ partners:[["ヒビノクロマテック(LED開発・製造・販売)","https://chromatek.hibino.co.jp/"],["ROE Visual(LEDパネル)","https://www.roevisual.com/"],["disguise(メディアサーバー)","https://www.disguise.one/"],["WOW(ジェネレーティブ映像デザイン)","https://www.w0w.co.jp/"]],
+ gearNote:"LED本体は国内メーカー/商社からの購入または長期レンタル。「クロス新宿ビジョン(3D巨大猫)」の高精細ラウンドLEDや、Japan Mobility Show TOYOTAブースの91m湾曲LEDなど、曲面・大型の納入実績を持つベンダーと組むと提案の説得力が上がる。",
+ gear:[["ヒビノクロマテック — LEDディスプレイ・システム(開発・製造・販売)","https://chromatek.hibino.co.jp/"],["ヒビノ — クロス新宿ビジョン事例記事","https://www.hibino.co.jp/connect/thoughts/2506_cross-sinjuku-vision.html"],["ヒビノ — LED納入事例集","https://chromatek.hibino.co.jp/usecase/"]],
+ decision:{go:"◎ 即提案可", cost:"中〜高(LED面積に比例)", lead:"2〜4ヶ月", contact:"@テクニカルディレクター"}},
+
+{id:"xr-live", t:"XRライブ / メタバース会場", tags:["xr","net","vp","avatar"], uc:["live"], ph:2, diff:3, date:"2026-04-18", hot:180, pat:"noise", seed:5, imgFile:"Yeezus_Tour_Stage.jpg",
+ origin:"XRライブ/高臨場感ライブビューイング(EEX主要領域)",
+ sum:"現実のステージにリアルタイムCGを合成するXRライブと、バーチャル空間内に会場を構築するメタバースライブの総称。物理会場のキャパシティと地理的制約を超えて観客を接続でき、アーティストの世界観をCGで拡張した「現地でも配信でもない第3の観劇体験」を提供する。",
+ verify:"XRライブはEEXの主要事業領域。グリーンバック/LEDステージでのリアルタイム合成、配信プラットフォーム連携のワークフローを複数案件で運用済み。",
+ barriers:["リアルタイムCG制作(Unreal Engine等)の制作費と人材","配信プラットフォーム・同時接続規模によるインフラコスト","アーティスト/IPホルダーとの権利・演出調整","「配信チケットの価格設定」などビジネスモデル側の設計が必要"],
+ foresight:"ヘッドセット(Quest/Vision Pro系)の普及待ちの面はあるが、スマホ視聴のXRライブは既に成立。リアル会場×XR演出×配信のハイブリッド設計を一括で担えるプレイヤーは少なく、体験設計の総合力が効く領域。音楽IPホルダーとの関係構築が鍵。",
+ links:[["Unreal Engine 公式","https://www.unrealengine.com/"],["cluster(国内メタバースプラットフォーム)","https://cluster.mu/"]],
+ yts:[["XRライブの事例映像を検索","XR live concert mixed reality stage"],["メタバースライブ事例を検索","メタバース ライブ バーチャル会場"]],
+ intl:[["ABBA Voyage(ロンドン — デジタルアバター常設ライブ)","https://abbavoyage.com/"],["Sphere(ラスベガス)","https://www.thesphere.com/"],["UNIT9 — VR/AR部門(ロンドン/NY/LA/ベルリン)","https://www.unit9.com/vr"]],
+ domestic:[["超歌舞伎 Powered by IOWN(公式)","https://chokabuki.jp/"],["VTuber×IOWN — APN接続でスタジオ/会場を分離、運営コスト約20%削減(MoguLive)","https://www.moguravr.com/vtuber-iown-ntt-2026/"],["cluster — 国内メタバースライブ事例","https://cluster.mu/"]],
+ partners:[["Hibino VFX Studio(バーチャルプロダクション)","https://hibino-vfxstudio.com/"],["Epic Games / Unreal Engine","https://www.unrealengine.com/"],["クリプトン・フューチャー・メディア","https://www.crypton.co.jp/"],["UNIT9(グローバル制作パートナー)","https://www.unit9.com/"]],
+ gearNote:"LEDウォール+カメラトラッキングのインカメラVFX撮影は国内に商用スタジオあり。自前構築せずスタジオ利用から始めるのが現実的。",
+ gear:[["Hibino VFX Studio — バーチャルプロダクション","https://hibino-vfxstudio.com/"],["PRG — リギング&オートメーション(ステージ機構)","https://www.prg.com/ja-jp/services/rigging"]],
+ decision:{go:"○ 提案可(規模要件次第)", cost:"中〜高", lead:"3〜6ヶ月", contact:"@XRディレクター"}},
+
+{id:"live-viewing", t:"高臨場感ライブビューイング(多拠点)", tags:["net","led","audio"], uc:["live","sports"], ph:2, diff:3, date:"2026-06-01", hot:76, pat:"wave", seed:9, imgFile:"Cowboys_Stadium_screen.jpg",
+ origin:"IGアリーナ×BUNTAI 2拠点接続ライブ",
+ sum:"高精細映像と立体音響を低遅延で別会場に伝送し、「その場にいる」臨場感を再現するパブリックビューイングの進化形。単なる中継と違い、会場側の歓声や熱量も相互に伝送することで、複数会場が一つの興行として一体化する。",
+ verify:"IGアリーナとBUNTAIをIOWNで接続した音楽ライブで、観客同士の一体感の共有までを含む多拠点興行フォーマットを実証。NTTグループは万博会場でGLION ARENA KOBEのバスケ試合を触感(FEEL TECH)ごと伝送する世界初の実証(2025年10月)、AI活用で撮影拠点をカメラのみに軽量化し3D+ARを同時配信する実証(2026年2月)まで進めており、フェーズは商用化直前。",
+ barriers:["会場間を結ぶ広帯域・低遅延回線の確保(専用線コスト)","受け側会場の大型LED・音響設備の設営費","興行権・配信権・肖像権など権利処理が複雑","多拠点分のチケッティング・運営体制"],
+ foresight:"国内アリーナ建設ラッシュ(IGアリーナ等)と人気興行のチケット不足を背景に、「1公演を全国N会場で同時開催する」モデルが定着する可能性が高い。通信キャリア+アリーナホルダー+興行主を束ねる座組みを作れるかが勝負。",
+ links:[["IMAGICA EEX 公式(高臨場感ライブビューイング)","https://eex.co.jp/"],["NTT R&D — IOWN構想","https://www.rd.ntt/iown/"]],
+ yts:[["多拠点ライブビューイング事例を検索","ライブビューイング 多拠点 同時開催 アリーナ"],["IOWN活用ライブの映像を検索","IOWN ライブ 伝送 実証"]],
+ intl:[["Cosm — 'Shared Reality'による没入スポーツ観戦(米国)","https://www.cosm.com/"],["Cosm Technology — ドーム型LED技術","https://tech.cosm.com/"]],
+ domestic:[["IGアリーナ×BUNTAI 2拠点接続ライブ(IMAGICA EEX)","https://eex.co.jp/news/"],["IOWN×FEEL TECH 未来型ライブビューイング — 神戸ストークス戦を万博会場へ触感ごと伝送(NTTグループ)","https://www.nttdata.com/global/ja/news/topics/2025/090300/"],["IOWN×AIで3Dライブ映像+ARを同時配信 — カメラのみで撮影拠点を軽量化(NTTドコモソリューションズ)","https://www.nttcom.co.jp/news/pr26030201.html"],["ライブ・ビューイング・ジャパン(映画館LV最大手)","https://liveviewing.jp/"]],
+ partners:[["NTT(IOWN APN)","https://www.rd.ntt/iown/"],["NTTドコモソリューションズ(IOWN×AI実証)","https://www.nttcom.co.jp/"],["ヒビノ(大型映像・音響)","https://www.hibino.co.jp/visual/"],["Sports×Hibino","https://sports.hibino.co.jp/"]],
+ gearNote:"受け側会場の大型映像・音響はイベント映像/PA大手のレンタル+オペレーションで構成するのが標準。スポーツ会場は専業チームを持つベンダーがある。",
+ gear:[["ヒビノ — コンサート・イベント大型映像","https://www.hibino.co.jp/visual/"],["ヒビノ — 中・大規模コンサート音響(PA)","https://www.hibino.co.jp/sound/"],["Sports×Hibino — スポーツ大型映像","https://sports.hibino.co.jp/"]],
+ decision:{go:"○ 提案可(会場・回線の座組み次第)", cost:"高", lead:"4〜8ヶ月", contact:"@プロデューサー"}},
+
+{id:"volumetric", t:"ボリュメトリックキャプチャ", tags:["pc","xr","vp","gs"], uc:["live","museum"], ph:2, diff:4, date:"2026-03-22", hot:64, pat:"voxel", seed:13, imgFile:"Estudio_de_Motion_Capture_en_Funcom.jpg",
+ origin:"点群/自由視点映像の関連技術として調査",
+ sum:"数十〜百台超のカメラで人物やパフォーマンスを全方位から撮影し、自由な視点で再生できる3D映像データとして記録する技術。一度キャプチャすれば、XRライブ・メタバース・ミュージアム展示など複数の体験に同一アセットを展開できる「体験IPの3D原盤」になり得る。",
+ verify:"国内専用スタジオでのテスト撮影を通じ、撮影〜データ処理〜Unreal Engine上での再生までのパイプラインを確認。データ量と後処理時間が想定以上に大きく、現状は短尺コンテンツ向きと判断。",
+ barriers:["専用スタジオが国内に少なく、撮影単価が高い","データ量が膨大で後処理(クリーンアップ)に時間がかかる","再生側にも相応のGPU性能が必要","長尺コンテンツにはまだ不向き"],
+ foresight:"3D Gaussian Splatting系の軽量化技術の進化で、撮影・再生コストは急速に低下中。2〜3年内に「スマホ撮影→3D化」レベルまで民主化される可能性があり、その前に高品質キャプチャの制作ノウハウと体験IP原盤の考え方を確立しておく価値がある。",
+ links:[["キヤノン ボリュメトリックビデオ技術","https://global.canon/ja/technology/"],["Unreal Engine 公式","https://www.unrealengine.com/"]],
+ yts:[["ボリュメトリックキャプチャのデモを検索","volumetric capture studio demo"],["Gaussian Splatting事例を検索","3D gaussian splatting demo"]],
+ intl:[["4DViews(フランス — ボリュメトリックキャプチャシステム)","https://www.4dviews.com/"]],
+ domestic:[["キヤノン ボリュメトリックビデオスタジオ-川崎(4Kカメラ100台超)","https://global.canon/ja/vvs/"],["Sony PCL — 可搬型ボリュメトリックシステム(リアルタイム自由視点)","https://www.sonypcl.jp/technology/00018.html"],["Sony PCL — 複数静止画から3DCGアセット生成(XYN系技術)","https://www.sonypcl.jp/technology/00020.html"]],
+ partners:[["キヤノン(スタジオ利用・技術提供)","https://global.canon/ja/vvs/"],["Sony PCL(可搬型ボリュメトリック)","https://www.sonypcl.jp/"],["Hibino VFX Studio(再生・合成環境)","https://hibino-vfxstudio.com/"]],
+ gearNote:"キャプチャは専用スタジオ利用が前提。再生・合成側はバーチャルプロダクションスタジオのLED+トラッキング環境と組み合わせられる。",
+ gear:[["Hibino VFX Studio — バーチャルプロダクション","https://hibino-vfxstudio.com/"]],
+ decision:{go:"△ 実証・短尺向き", cost:"高(撮影単価)", lead:"2〜4ヶ月", contact:"@R&D担当"}},
+
+{id:"dtwin-city", t:"デジタルツイン都市シミュレーション", tags:["dt","viz"], uc:["city"], ph:2, diff:4, date:"2026-05-10", hot:58, pat:"iso", seed:17, imgFile:"2019_City_of_London_3D_model.jpg",
+ origin:"ソサイエティ事業(防災・街・インフラ)領域",
+ sum:"都市の3Dモデルに人流・交通・気象などのリアルタイムデータを重ね、シミュレーションと可視化を行う技術。国交省「PLATEAU」が全国の3D都市モデルをオープンデータ化しており、防災計画・イベント混雑予測・都市開発の合意形成などを「見て理解できる体験」に変換できる。",
+ verify:"PLATEAUの3D都市モデルを用いた可視化プロトタイプを検証。データ自体は無償で入手可能だが、リアルタイムデータ連携と演出品質の作り込みに工数がかかることを確認。",
+ barriers:["リアルタイムデータ(人流等)の取得に費用・契約が必要","自治体・インフラ企業など関係者が多く、意思決定が遅い","「シミュレーションの正しさ」への説明責任が問われる","収益化はコンサル/受託型になりがちで単価設計が難しい"],
+ foresight:"防災・万博後の都市開発・スタジアム周辺整備など行政系の案件が増加傾向。技術単体では差別化しにくいが、「複雑な都市課題を体験として理解させる」演出力を持つプレイヤーは希少で、ソサイエティ事業の中核になり得る。",
+ links:[["国土交通省 PLATEAU 公式","https://www.mlit.go.jp/plateau/"],["東京都 デジタルツイン実現プロジェクト","https://info.tokyo-digitaltwin.metro.tokyo.lg.jp/"]],
+ yts:[["PLATEAU活用事例を検索","PLATEAU 3D都市モデル 活用事例"],["都市デジタルツイン事例を検索","digital twin city simulation"]],
+ intl:[["Virtual Singapore(国家規模の都市デジタルツイン)","https://en.wikipedia.org/wiki/Virtual_Singapore"],["Cesium(3D地理空間プラットフォーム)","https://cesium.com/"]],
+ domestic:[["国土交通省 PLATEAU ユースケース集","https://www.mlit.go.jp/plateau/use-case/"],["東京都デジタルツイン実現プロジェクト","https://info.tokyo-digitaltwin.metro.tokyo.lg.jp/"]],
+ partners:[["国土交通省 PLATEAU(3D都市モデル提供)","https://www.mlit.go.jp/plateau/"],["ESRIジャパン(GIS)","https://www.esrij.com/"],["Cesium","https://cesium.com/"]],
+ decision:{go:"○ 行政・R&D案件で提案可", cost:"中(データ連携次第)", lead:"3〜6ヶ月", contact:"@ソサイエティ担当"}},
+
+{id:"drone-show", t:"ドローンショー × 音楽同期", tags:["drone","kinetic"], uc:["event","live"], ph:2, diff:3, date:"2026-06-25", hot:142, pat:"orbit", seed:19, imgFile:"BTS_Arirang_comeback_drone_light_show.png",
+ origin:"東京ベイeSG × ドローン等最新機器の事業開発",
+ sum:"数百〜数千機のLED搭載ドローンが編隊飛行し、音楽と同期した立体アニメーションを夜空に描く演出。花火と比べ騒音・煙が少なく再現性が高いため、都市部イベント・自治体の観光施策での採用が急増している。マッピングや花火とのハイブリッド演出も進む。",
+ verify:"国内オペレーターとの協業体制で演出企画〜運航調整のワークフローを確認。演出の自由度は機体数にほぼ比例し、都市部では飛行許可の取得が全体スケジュールを規定することを確認。",
+ barriers:["航空法に基づく飛行許可・空域調整(都市部は特に難度高)","天候(風速)による中止リスクと保険設計","機体数に比例するコスト構造(数百機〜で数百万円規模〜)","国内の大規模運航オペレーターが限られる"],
+ foresight:"自治体のナイトタイムエコノミー施策と相性がよく、市場は拡大継続。演出がテンプレート化しつつあるため、今後は音楽・物語・マッピングとの統合演出やインタラクティブ化(観客参加)で差がつく。オペレーターとの提携を早期に固めるべき領域。",
+ links:[["株式会社ドローンショー・ジャパン","https://droneshow.co.jp/"],["国土交通省 無人航空機の飛行ルール","https://www.mlit.go.jp/koku/koku_tk10_000003.html"]],
+ yts:[["国内ドローンショー事例を検索","ドローンショー 日本 音楽 同期"],["海外大規模ドローンショーを検索","drone light show thousands"]],
+ intl:[["Sky Elements(米国 — ギネス記録多数の大規模ショー)","https://skyelementsdrones.com/"]],
+ domestic:[["レッドクリフ実績(万博2,500機/渋谷3,030機)","https://redcliff-inc.co.jp/works/"],["ドローンショー・ジャパン(国内パイオニア)","https://droneshow.co.jp/"]],
+ partners:[["レッドクリフ(国内シェアNo.1)","https://redcliff-inc.co.jp/"],["ドローンショー・ジャパン","https://droneshow.co.jp/"],["MPLUSPLUS(ビジョンドローン/LED演出同期)","https://mplpl.com/"]],
+ decision:{go:"○ 提案可(許可リードタイム注意)", cost:"中〜高(機体数比例)", lead:"3〜5ヶ月", contact:"@プロデューサー"}},
+
+{id:"6g", t:"6G/次世代通信の体験実証", tags:["net","sensing"], uc:["sports","city"], ph:1, diff:5, date:"2026-02-14", hot:41, pat:"wave", seed:23, imgFile:"5G_cell_tower.JPG",
+ origin:"NTTドコモ 6Gテックセッションとの共同研究",
+ sum:"2030年代の実用化を目指す第6世代移動通信。超低遅延・超多数同時接続・センシング統合などが想定され、「通信そのものが体験インフラになる」世界を見据えた体験PoCが通信キャリアの研究部門と共同で進んでいる。現時点では技術検証と、実用時の体験フォーマットの先行開発が中心。",
+ verify:"ドコモ6Gテックセッションとの共同研究、およびドコモベニューを活用した実証実験フォーマットの構築を推進中。OOH(ライブボード)を使った実証など、体験側からの検証テーマを継続的に供給する体制を確認。",
+ barriers:["技術自体が研究段階で、仕様・標準が未確定","キャリアの研究部門との共同研究体制が参加の前提","短期の収益化は見込めず、投資回収は長期目線","成果がキャリア側の発表に紐づくため、実績公開に制約"],
+ foresight:"実用は2030年前後。今は「6Gで何が体験できるか」の問いに答えを持つプレイヤーがいないため、体験側から実証テーマを提案できる立場は貴重。キャリアR&Dとの関係を維持し、IOWN実績と合わせて「次世代通信×体験」の第一想起を取るフェーズ。",
+ links:[["NTTドコモ 6Gホワイトペーパー","https://www.docomo.ne.jp/corporate/technology/whitepaper_6g/"],["NTT R&D — IOWN構想","https://www.rd.ntt/iown/"]],
+ yts:[["6Gのコンセプト解説を検索","6G 次世代通信 ユースケース"],["ドコモ6G実証の動画を検索","ドコモ 6G 実証実験"]],
+ intl:[["Nokia Bell Labs — 6G研究","https://www.bell-labs.com/"],["Ericsson — 6Gビジョン","https://www.ericsson.com/en/6g"]],
+ domestic:[["Beyond 5G推進コンソーシアム(総務省系)","https://b5g.jp/"],["NICT 情報通信研究機構","https://www.nict.go.jp/"]],
+ partners:[["NTTドコモ(6Gテックセッション)","https://www.docomo.ne.jp/corporate/technology/whitepaper_6g/"],["NICT","https://www.nict.go.jp/"],["総務省 Beyond 5G推進","https://www.soumu.go.jp/menu_seisaku/ictseisaku/B5G_sokushin/index.html"]],
+ decision:{go:"× 単独提案不可(共同研究枠で推進)", cost:"R&D投資", lead:"年単位", contact:"@R&D担当"}},
+
+{id:"wind-viz", t:"風のビジュアライズ(環境データ可視化)", tags:["viz","dt"], uc:["city","museum"], ph:1, diff:3, date:"2026-01-30", hot:33, pat:"iso", seed:29, imgFile:"Global_Map_of_Wind_Speed.png",
+ origin:"地球科学可視化技術研究所との業務提携",
+ sum:"気流・風況など目に見えない環境データをセンシングし、映像・空間表現として可視化する技術。科学データの正確さとアート表現を両立させることで、環境・防災・教育の文脈で「データを体感として理解させる」展示・演出に展開できる。",
+ verify:"地球科学可視化技術研究所との業務提携により、科学的に正確な可視化表現の共同開発体制を構築。展示・受託への展開と新規案件の発掘を進行中。",
+ barriers:["センシング機器の設置・精度確保に専門知見が必要","研究機関との連携が前提で、単独では品質担保が難しい","「正確さ」と「演出」のバランス調整に検証時間がかかる","市場が未成熟で収益モデルが確立していない"],
+ foresight:"気候変動への関心の高まりで、科学館・園芸博・防災教育など公共文脈の需要が伸びる見込み。データ可視化×空間体験は競合が少なく、研究所提携という参入障壁を築けている領域のため、実績を積んで「科学×体験」の代表格を狙う。",
+ links:[["「IMAGICA EEX」×「地球科学可視化技術研究所」業務提携(PR TIMES)","https://prtimes.jp/main/html/rd/p/000000247.000037973.html"],["国土交通省 PLATEAU 公式","https://www.mlit.go.jp/plateau/"]],
+ yts:[["風・気流の可視化事例を検索","wind flow visualization art"],["科学データ可視化展示を検索","科学 データ可視化 展示 ミュージアム"]],
+ intl:[["earth.nullschool.net(世界的に有名な地球風況ビジュアライズ)","https://earth.nullschool.net/"],["Windy(気象ビジュアライズプラットフォーム)","https://www.windy.com/"]],
+ domestic:[["地球科学可視化技術研究所×IMAGICA EEX 業務提携","https://prtimes.jp/main/html/rd/p/000000247.000037973.html"],["日本科学未来館(科学系展示の主要ベニュー)","https://www.miraikan.jst.go.jp/"]],
+ partners:[["地球科学可視化技術研究所(提携先)","https://prtimes.jp/main/html/rd/p/000000247.000037973.html"],["日本科学未来館","https://www.miraikan.jst.go.jp/"]],
+ decision:{go:"△ 公共・教育文脈で提案可", cost:"中", lead:"3〜6ヶ月", contact:"@ソサイエティ担当"}},
+
+{id:"immersive", t:"没入型シアター / イマーシブ空間", tags:["pm","haptic","audio"], uc:["museum","retail"], ph:3, diff:3, date:"2026-06-08", hot:167, pat:"grid", seed:31, imgFile:"TeamLab_Borderless_Azabudai_Hills.jpg",
+ origin:"『House of Vampire 〜Dive into ENHYPEN Chronicle〜』/ FUTURE TRAIN",
+ sum:"壁面・床面への全面投影、立体音響、照明・香りなどを統合し、空間ごと物語世界に没入させる体験施設・展示の形式。Sphere(ラスベガス)やABBA Voyage(ロンドン)のように「体験そのものが目的地になる」世界的成功例が生まれ、空間体験市場の中核フォーマットになっている。",
+ verify:"HYBE JAPAN主催の楽曲体感ミュージアム『House of Vampire』で空間演出・体験設計を総合プロデュース。列車型エンタメレストラン「FUTURE TRAIN」でも空間演出・演出機材構築を担当し、常設・興行の両形態で運用ノウハウを蓄積済み。",
+ barriers:["常設施設の場合、箱(不動産)の確保と初期投資が大きい","来場が続く体験にするためのIP・コンテンツ企画力が必須","プロジェクター・音響の常時稼働に伴う保守運用費","集客維持のためコンテンツ更新の仕組みが必要"],
+ foresight:"「音楽・アニメ等の既存IP×没入空間」が新しいエンタメフォーマットとして定着しつつあり、体験IPの原盤を持つ側に収益が蓄積していく。受託制作に留まらず、企画段階から事業に参画し体験IPを共同保有するモデルへ移行できるかが分水嶺。",
+ links:[["Sphere(ラスベガス)公式","https://www.thesphere.com/"],["ABBA Voyage 公式","https://abbavoyage.com/"],["IMAGICA EEX 公式","https://eex.co.jp/"]],
+ yts:[["イマーシブミュージアム事例を検索","immersive museum experience exhibition"],["ABBA Voyage / Sphereの映像を検索","ABBA Voyage Sphere Las Vegas experience"]],
+ intl:[["Sphere(ラスベガス)","https://www.thesphere.com/"],["ABBA Voyage(ロンドン)","https://abbavoyage.com/"],["Lightroom(ロンドン — アーティスト主導の没入型展示)","https://lightroom.uk/"],["Meow Wolf(米国 — 物語主導の常設イマーシブ施設)","https://meowwolf.com/"],["ARTECHOUSE(米国 — デジタルアート常設ギャラリー)","https://www.artechouse.com/"],["UNIT9 — Experiential部門(グローバル制作スタジオ)","https://www.unit9.com/experiential"]],
+ domestic:[["『House of Vampire』楽曲体感ミュージアム(IMAGICA EEX)","https://eex.co.jp/"],["チームラボボーダレス 麻布台ヒルズ","https://www.teamlab.art/jp/e/borderless-azabudai/"],["WOW — 万博シグネチャーパビリオン「null²」/ TAKANAWA GATEWAY CITY 未来体験シアター","https://www.w0w.co.jp/works"],["NAKED(ネイキッド) — 体験型アート展多数","https://naked.co.jp/"]],
+ partners:[["丹青社(空間づくり)","https://www.tanseisha.co.jp/"],["乃村工藝社(空間づくり)","https://www.nomurakougei.co.jp/"],["PRG(照明・音響・リギング統合)","https://www.prg.com/ja-jp/services"],["WOW(ビジュアルデザイン)","https://www.w0w.co.jp/"],["Hovercraft(米国 — 体験&イノベーション)","https://www.hovercraftstudio.com/"]],
+ gearNote:"プロジェクター・音響・照明・リギングを統合する案件のため、360°テクニカルプロダクション体制を持つベンダーとの協業が工程管理上有利。常設は保守契約まで含めて設計する。",
+ gear:[["PRG — 360°テクニカルサービス一覧","https://www.prg.com/ja-jp/services"],["ヒビノ — コンサート・イベント大型映像","https://www.hibino.co.jp/visual/"],["ヒビノ — 中・大規模コンサート音響(PA)","https://www.hibino.co.jp/sound/"]],
+ decision:{go:"◎ 即提案可(主力領域)", cost:"高(常設は特大)", lead:"6〜12ヶ月(常設)", contact:"@プロデューサー"}},
+
+{id:"ai-realtime", t:"AIリアルタイム生成インタラクティブ演出", tags:["ai","interactive","sensing"], uc:["event","retail"], ph:2, diff:3, date:"2026-06-28", hot:190, pat:"noise", seed:37, imgFile:"Sandbox_with_interactive_projection_at_31c3.jpg",
+ origin:"ジェネレーティブコンテンツ制作の発展領域",
+ sum:"画像生成AIをリアルタイムに実行し、観客の動き・声・カメラ映像に反応して映像が生成され続けるインタラクティブ演出。StreamDiffusion等の高速化技術により生成AIが「事前制作ツール」から「その場で反応する演出装置」に変わり、一人ひとり違う体験を返せるようになった。",
+ verify:"StreamDiffusion+TouchDesigner構成でカメラ入力→リアルタイム生成のプロトタイプを検証。体験としての驚きは大きい一方、出力品質のコントロール(意図しない生成の抑制)に運用設計が必要なことを確認。",
+ barriers:["リアルタイム生成に耐えるGPU実行環境のコスト","出力の品質・安全性コントロール(意図しない生成の抑制)","学習データ・生成物の権利面がクライアント審査で論点になる","モデル・ツールの進化が速く、構成が数ヶ月で陳腐化する"],
+ foresight:"生成速度・品質の進化は継続しており、1〜2年で常設サイネージ・ライブ演出への標準搭載が進む見込み。技術自体は誰でも使えるようになるため、勝負は「反応する体験」の演出設計力に移る。小規模案件で運用ノウハウを先に貯めるのが得策。",
+ links:[["StreamDiffusion(GitHub)","https://github.com/cumulo-autumn/StreamDiffusion"],["TouchDesigner(Derivative) 公式","https://derivative.ca/"]],
+ yts:[["リアルタイム生成AI演出の事例を検索","StreamDiffusion realtime interactive art"],["AIインタラクティブ展示を検索","AI インタラクティブ 展示 リアルタイム生成"]],
+ intl:[["Refik Anadol Studio(MoMA収蔵・Sphere外壁などAIアート第一人者)","https://refikanadol.com/"],["UNIT9 — Real Time VFX部門","https://www.unit9.com/real-time-vfx"],["teamLab(海外常設多数)","https://www.teamlab.art/"]],
+ domestic:[["ライゾマティクス(R&D型クリエイティブ)","https://rhizomatiks.com/"],["Qosmo(AI×クリエイティビティ)","https://qosmo.jp/"],["WOW — ビジュアルデザインR&D/オリジナルアート","https://www.w0w.co.jp/works"]],
+ partners:[["Qosmo","https://qosmo.jp/"],["Derivative(TouchDesigner)","https://derivative.ca/"],["NVIDIA(GPU/推論環境)","https://www.nvidia.com/"]],
+ decision:{go:"○ 小〜中規模で提案可", cost:"中(GPU環境含む)", lead:"1〜3ヶ月", contact:"@テクニカルディレクター"}},
+
+// ===== 外部組織リサーチからの追加(PARTY / Rhizomatiks / 1→10 / Bascule / Dentsu Lab Tokyo / Moment Factory) =====
+{id:"rzm-sensing", t:"リアルタイムセンシング × パフォーマンス演出", tags:["sensing","viz","ai","drone","kinetic","robot"], uc:["live","event"], ph:3, diff:4, date:"2026-04-17", hot:155, pat:"dots", seed:41,
+ origin:"外部リサーチ: Rhizomatiks(ライゾマティクス)",
+ sum:"モーショントラッキング・位置測位・機械学習でパフォーマーや競技者の動きをリアルタイムに解析し、映像・照明・ドローンを同期させる演出技術。Perfumeのライブ演出やフェンシングの剣先可視化など、「人間の動きがそのまま演出のインプットになる」表現を確立した領域。",
+ verify:"Rhizomatiksが2012年から開発を継続するフェンシング可視化システムは、2026年にWORLD FENCING LEAGUE(LA)で実戦導入まで到達。Perfume東京ドーム公演やMUSIC STATION SUPER LIVEなど、放送・大規模興行での安定運用実績が確認できる。",
+ barriers:["トラッキング精度と演出のリアルタイム同期に高度なR&D体制が必要","専用センサー・測位インフラの構築コスト","リハーサル・調整に通常の演出より長い時間を要する","再現できる技術者・チームが国内でも極めて限定的"],
+ foresight:"スポーツ中継・ライブ演出の「データ可視化演出」は標準化が進む見込み。第一人者のRhizomatiksとの協業か、要素技術(トラッキング+リアルタイムグラフィックス)の内製化かの選択になる。スポーツ興行のスマートアリーナ化と合流する領域。",
+ links:[["Rhizomatiks 公式","https://rhizomatiks.com/"],["Fencing Visualized Data Archive","https://fencing.rhizomatiks.com/"]],
+ yts:[["Perfume×ライゾマの演出事例を検索","Perfume Rhizomatiks ライブ演出 リアルタイム"],["フェンシング可視化の映像を検索","Fencing Visualized Rhizomatiks"]],
+ intl:[["WORLD FENCING LEAGUE(LA)でFencing Visualizedが実戦導入","https://rhizomatiks.com/news/2026/04/17/world-fencing-league_fencing-visualized/"],["Deleted Reality 2025(中国美術学院)","https://rhizomatiks.com/work/deleted-reality-2025"]],
+ domestic:[["Perfume “Nebula Romance” 東京ドーム公演","https://rhizomatiks.com/work/perfume-nebula-romance-tokyo-dome"],["MUSIC STATION SUPER LIVE 2025 Perfume “edge”","https://rhizomatiks.com/work/tv-asahi-music-station-super-live2025-perfume-edge"]],
+ partners:[["Rhizomatiks / Abstract Engine","https://abstractengine.com/"],["Flowplateaux(旧ELEVENPLAY系)","https://flowplateaux.com/"]],
+ decision:{go:"△ 協業前提(専門チームが必要)", cost:"高", lead:"4〜8ヶ月", contact:"@テクニカルディレクター"}},
+
+{id:"onetoten-lbe", t:"空間DX / ナイトタイム庭園エンターテインメント", tags:["pm","xr","ai","interactive"], uc:["city","museum","event"], ph:3, diff:3, date:"2026-06-03", hot:112, pat:"iso", seed:43,
+ origin:"外部リサーチ: 1→10(ワントゥーテン)",
+ sum:"庭園・城郭・商業施設など既存の空間を、光・音・デジタルアート・AR/AIで「体験の舞台」に変換する空間DX。1→10の「旧芝離宮夜会」は8回開催の定番ナイトイベントに成長しており、文化財を毀損せず夜間観光資源化するモデルとして確立されつつある。",
+ verify:"旧芝離宮夜会(8回目開催)、原宿ハラカド常設「1→10 Experience Showroom」、丹青社との「Spatial DX Solution」協業開始(2026年6月)など、単発イベントから常設・ソリューション化への展開を確認。ARフォト「ARmazing Snap」などパッケージ商品化も進む。",
+ barriers:["文化財・公園利用の許認可と管理者との調整","屋外開催のため天候・季節リスク","収益はチケット+協賛依存で単価設計が難しい","毎年の演出更新が集客維持の前提"],
+ foresight:"自治体のナイトタイムエコノミー施策と観光需要を背景に市場拡大が続く。「イベント単発」から「常設・パッケージ化」に進んだプレイヤーが収益性で優位に立つ。EEXのロケーションベースエンタメ事業と直接競合/協業し得る領域。",
+ links:[["1→10 公式","https://www.1-10.com/"],["LBE(ロケーションベースエンターテイメント)事業","https://www.1-10.com/business/lbe/"]],
+ yts:[["旧芝離宮夜会の映像を検索","旧芝離宮夜会 ワントゥーテン ナイトイベント"],["1→10の事例を検索","ワントゥーテン 1→10 空間DX"]],
+ intl:[["Living Beauty by SOU・SOU SHANGHAI(上海)","https://www.1-10.com/works/living-beauty-by-sousou-shanghai"],["Hovercraft(米国 — リテール体験・ブランドアクティベーション)","https://www.hovercraftstudio.com/"]],
+ domestic:[["旧芝離宮夜会(光・音・デジタルアートの夜間庭園)","https://www.1-10.com/news/"],["1→10 Experience Showroom(原宿ハラカド常設)","https://www.1-10.com/"]],
+ partners:[["1→10(ワントゥーテン)","https://www.1-10.com/"],["丹青社(Spatial DX Solution協業)","https://www.tanseisha.co.jp/"]],
+ decision:{go:"○ 提案可(競合調査兼ねる)", cost:"中〜高", lead:"4〜6ヶ月", contact:"@プロデューサー"}},
+
+{id:"mf-nightwalk", t:"ナイトウォーク型イマーシブ体験(Lumina)", tags:["pm","viz","haptic","interactive","audio"], uc:["city","museum"], ph:3, diff:3, date:"2026-05-20", hot:134, pat:"orbit", seed:47,
+ origin:"外部リサーチ: Moment Factory(モーメントファクトリー)",
+ sum:"森・湖畔・史跡などの自然/文化資源を、照明・プロジェクション・音響・インタラクションで夜の回遊体験に変えるナイトウォーク。Moment Factory(モントリオール)の「Lumina」シリーズは世界十数カ所で展開され、日本でも阿寒摩周国立公園「KAMUY LUMINA」が常設運営されている。",
+ verify:"Moment Factoryは大聖堂での「AURA」、空港(LAX・チャンギ等)のメディア空間、スタジアム演出まで360°の実績を持つ。日本法人(東京)があり国内展開の協業余地あり。ナイトウォークは「歩く距離×物語×インタラクション」の設計ノウハウが品質を決めることを確認。",
+ barriers:["国立公園・文化財での設置は許認可と環境配慮が厳格","屋外常設のため機材の防水・防寒・保守体制が必須","初期投資が大きく、地域の観光導線とセットでないと回収が難しい","物語設計(現地文化との接続)に時間がかかる"],
+ foresight:"地方観光×夜間経済の文脈で国内需要は拡大。海外プレイヤー(Moment Factory等)と国内制作体制の協業モデルが現実的。EEXのソサイエティ事業(自然・防災・地域)との親和性が高く、地域IP化まで踏み込めるかが鍵。",
+ links:[["Moment Factory 公式(日本語)","https://momentfactory.com/ja"],["Moment Factory 公式(EN)","https://momentfactory.com/"]],
+ yts:[["Luminaナイトウォークの映像を検索","Lumina night walk Moment Factory"],["KAMUY LUMINAの映像を検索","カムイルミナ 阿寒 ナイトウォーク"]],
+ intl:[["Moment Factory(モントリオール本社)","https://momentfactory.com/"],["AURA — ノートルダム大聖堂の没入体験","https://momentfactory.com/"]],
+ domestic:[["KAMUY LUMINA(阿寒摩周国立公園のナイトウォーク)","https://www.kamuylumina.jp/"]],
+ partners:[["Moment Factory(東京オフィスあり)","https://momentfactory.com/ja"],["PRG(機材・テクニカル)","https://www.prg.com/ja-jp/services"]],
+ decision:{go:"○ 地域・観光案件で提案可", cost:"高(常設)", lead:"6〜12ヶ月", contact:"@ソサイエティ担当"}},
+
+{id:"bascule-live", t:"リアルタイム参加型ライブ / 放送連動インタラクティブ", tags:["interactive","net","xr","viz"], uc:["live","event"], ph:3, diff:3, date:"2026-03-15", hot:98, pat:"wave", seed:53,
+ origin:"外部リサーチ: Bascule(バスキュール)",
+ sum:"視聴者のスマホや放送・配信をリアルタイムに接続し、「観る」から「参加する」に変えるライブ体験設計。史上最大規模のオンラインライブ「This is 嵐 LIVE」や、ISSと地上を生中継でつなぐ「KIBO宇宙放送局」など、通信×放送×エンタメの越境事例を多数持つ。",
+ verify:"This is 嵐 LIVE(2020)でファン参加型演出を大規模同時接続で実現。KIBO宇宙放送局はJAXA・ISSと連携した世界唯一の宇宙スタジオ。スマホをデジタルフリップ化する「CONNECTED FLIP」等、参加演出のモジュール化も確認。",
+ barriers:["大規模同時接続のインフラ設計・負荷試験が必須","放送局・配信プラットフォームとの調整コスト","参加演出はIP・アーティスト側の理解と巻き込みが前提","体験の質が回線状況に左右される"],
+ foresight:"ライブ配信の差別化が「画質」から「参加体験」に移る中、参加型演出の需要は伸びる。EEXの多拠点ライブビューイングと組み合わせると「全会場+自宅が一体になる興行」まで拡張できる。宇宙文脈(KIBO)はソサイエティ事業の宇宙領域とも接続可能。",
+ links:[["Bascule 公式","https://bascule.co.jp/"],["KIBO宇宙放送局","https://bascule.co.jp/about/kibo/"]],
+ yts:[["This is 嵐 LIVEの演出解説を検索","This is 嵐 LIVE 参加型 演出"],["KIBO宇宙放送局の映像を検索","KIBO宇宙放送局 ISS 生中継"]],
+ intl:[["KIBO宇宙放送局(ISS×地上のリアルタイム接続)","https://bascule.co.jp/about/kibo/"]],
+ domestic:[["This is 嵐 LIVE 2020.12.31(史上最大規模オンラインライブ)","https://bascule.co.jp/work/this-is-arashi/"],["VR REAL DATA BASEBALL(プロ野球実データVR)","https://bascule.co.jp/about/vrbaseball/"]],
+ partners:[["Bascule","https://bascule.co.jp/"],["JAXA(KIBO関連)","https://www.jaxa.jp/"]],
+ decision:{go:"○ 配信・放送案件で提案可", cost:"中〜高", lead:"3〜6ヶ月", contact:"@プロデューサー"}},
+
+{id:"dlt-rd", t:"R&Dプロトタイピング(触覚AI・脳波・生成表現)", tags:["ai","haptic","viz","sensing","robot","tangible"], uc:["museum","retail","event"], ph:1, diff:3, date:"2026-01-20", hot:87, pat:"noise", seed:59,
+ origin:"外部リサーチ: Dentsu Lab Tokyo",
+ sum:"広告会社発のR&Dラボによる「つくりながら考える」プロトタイピング領域。言葉を触り心地に変換する生成触覚AI「FANTOUCHIE」、リアルタイム生成AIバーチャルライブ基盤「LAIV」、脳波・筋電を使った身体拡張など、体験の入出力を拡張する実験群が参考になる。",
+ verify:"OPEN LAB 2025で20のプロトタイプを公開。BASSDRUMとの共同レポート「THE TECHNOLOGY REPORT」で技術トレンドの読み解きも継続発信。プロダクト化前の「体験の種」を大量に試す運用モデルとして参照価値が高い。",
+ barriers:["プロトタイプ段階の技術が多く、案件転用には追加開発が必要","触覚・脳波系はデバイスの調達と安全配慮が必要","R&D投資として回収サイクルが長い"],
+ foresight:"五感系インターフェース(触覚・嗅覚・味覚)は没入体験の次の差別化軸。当アーカイブの「技術検証レポート」文化の手本でもあり、同様のOPEN LAB型の社内発表会を運用に組み込む価値がある。",
+ links:[["Dentsu Lab Tokyo 公式","https://dentsulab.tokyo/"],["THE TECHNOLOGY REPORT(BASSDRUM共同)","https://the-technology.report/"]],
+ yts:[["Dentsu Lab Tokyoのプロトタイプを検索","Dentsu Lab Tokyo OPEN LAB プロトタイプ"],["生成AIバーチャルライブLAIVを検索","LAIV Dentsu Lab バーチャルライブ 生成AI"]],
+ intl:[["CeBIT 2017 Opening Ceremony(独・国際見本市の日本ショーアクト)","https://dentsulab.tokyo/works/cebit/"],["BRIAN ENO'S THE SHIP — 生成映像MV","https://dentsulab.tokyo/works/the-ship/"]],
+ domestic:[["FANTOUCHIE — 生成触覚AI","https://dentsulab.tokyo/works/fantouchie/"],["LAIV — リアルタイム生成AIバーチャルライブ","https://dentsulab.tokyo/works/laiv/"],["Project Humanity — 筋電でALS共生者の身体性をデジタルへ","https://dentsulab.tokyo/works/project-humanity/"]],
+ partners:[["Dentsu Lab Tokyo","https://dentsulab.tokyo/"],["BASSDRUM(テクニカルディレクター集団)","https://bassdrum.org/"]],
+ decision:{go:"△ R&D参照・共同実験向き", cost:"R&D投資", lead:"案件による", contact:"@R&D担当"}},
+
+{id:"party-narrative", t:"ナラティブ×テクノロジー体験(バーチャルライブ/デジタルヒューマン)", tags:["xr","ai","avatar","interactive"], uc:["live","event","retail"], ph:2, diff:3, date:"2026-02-10", hot:104, pat:"voxel", seed:61,
+ origin:"外部リサーチ: PARTY",
+ sum:"物語(ナラティブ)を軸に、バーチャルライブ・AR・デジタルヒューマンなどの技術を編集する体験デザイン。VARPでのRADWIMPS「SHIN SEKAI」のような楽曲世界への没入、短期間で構築するデジタルヒューマン「Meta Awich」、AIで空を検出しポケモンを出現させるカメラなど、技術を物語の道具として使う設計思想が特徴。",
+ verify:"成田空港第3ターミナル(日建設計・良品計画と協業)のような空間デザインから、集英社ジャンプフェスタのバーチャル開催まで、フィジカル/デジタル双方の体験設計実績を確認。技術単体ではなく「なぜその体験か」の企画力が中核。",
+ barriers:["物語設計は属人性が高く、再現性のあるプロセス化が難しい","バーチャルライブはIPホルダーとの権利・世界観調整が前提","デジタルヒューマンは品質と制作期間のトレードオフ"],
+ foresight:"技術がコモディティ化するほど「ナラティブの編集力」が差別化になる。EEXの体験設計(Before/During/After統合)と同じ思想であり、競合として学ぶと同時に、案件によっては企画協業の相手にもなり得る。",
+ links:[["PARTY 公式","https://prty.jp/"],["All Projects","https://prty.jp/"]],
+ yts:[["RADWIMPS SHIN SEKAIの映像を検索","RADWIMPS SHIN SEKAI バーチャルライブ VARP"],["PARTYの事例を検索","PARTY prty 体験デザイン テクノロジー"]],
+ intl:[["ISPO MUNICH — 日本の繊維技術をARで疑似体験(独)","https://prty.jp/projects-detail/ist"],["UNIT9 — Digital/Experiential(グローバル制作事例)","https://www.unit9.com/work"]],
+ domestic:[["RADWIMPS SHIN SEKAI — 楽曲世界のバーチャルライブ","https://prty.jp/projects-detail/varp-x-radwimps-2021"],["Meta Awich — デジタルヒューマンのライブ演出","https://prty.jp/projects-detail/meta-awich"],["成田国際空港 第3ターミナル","https://prty.jp/projects-detail/terminal-3"]],
+ partners:[["PARTY","https://prty.jp/"],["noiz architects(空間協業例)","https://noizarchitects.com/"]],
+ decision:{go:"○ 企画協業・参照向き", cost:"中〜高", lead:"3〜6ヶ月", contact:"@プロデューサー"}},
+
+{id:"haptics-feel", t:"触覚伝送・共有(FEEL TECH / セルフハプティクス)", tags:["haptic","net","xr","avatar"], uc:["live","sports","event"], ph:2, diff:4, date:"2026-04-19", hot:96, pat:"dots", seed:67,
+ origin:"外部リサーチ: NTTドコモ FEEL TECH / NTT セルフハプティクス",
+ sum:"「触った感覚」「会場の熱狂」を通信で伝える人間拡張技術。ドコモのFEEL TECH®は相手の感じ方に合わせて感覚を変換・共有し、NTTのセルフハプティクスは視覚の錯覚と自分の身体を利用して、デバイスなしでVTuberとのハイタッチのような接触感を生み出す。映像・音に続く「第3の伝送チャネル=触覚」を開拓する領域。",
+ verify:"2025年10月、大阪・関西万博会場でGLION ARENA KOBEのバスケ試合の「臨場感・触感」をIOWN経由で伝送する世界初の未来型ライブビューイングを実施(ドリブルの感触を遠隔で体感)。2026年3月にはVTuberファンミーティングでセルフハプティクスによるハイタッチを実証し、参加者39名全員が満足以上と回答。技術は実証段階だが体験価値の検証は進んでいる。",
+ barriers:["感覚提示デバイス・変換アルゴリズムがまだ研究段階","感じ方の個人差への対応(キャリブレーション)が必要","NTTグループの研究資産に依存し、単独導入は困難","「触覚が伝わる」価値の言語化・営業説明が難しい"],
+ foresight:"視覚・聴覚の伝送が成熟する中、触覚は没入体験の次の差別化軸。ライブビューイングやVTuberイベントの「参加した実感」を大きく引き上げる可能性があり、IOWN系の多拠点興行とセットで提案パッケージ化される見込み。今のうちに共同実証で体験設計の知見を持つ価値が高い。",
+ links:[["NTTドコモ FEEL TECH®","https://www.docomo.ne.jp/corporate/technology/rd/ft/001.html"],["解説記事: VTuber×IOWNでエンタメはどこまで進化するか(MoguLive)","https://www.moguravr.com/vtuber-iown-ntt-2026/"]],
+ yts:[["FEEL TECHのデモ映像を検索","FEEL TECH ドコモ 触覚 共有"],["触覚フィードバック技術の事例を検索","haptics technology demo 触覚"]],
+ intl:[["haptics研究の国際動向(IEEE等での発表が中心)","https://www.ieee.org/"]],
+ domestic:[["IOWN×FEEL TECH 未来型ライブビューイング(万博×GLION ARENA KOBE)","https://www.nttdata.com/global/ja/news/topics/2025/090300/"],["VTuberとのハイタッチをセルフハプティクスで実現(ConnectVFes実証)","https://www.moguravr.com/vtuber-iown-ntt-2026/"],["Sony PCL — Haptics(振動による触覚提示)","https://www.sonypcl.jp/technology/00019.html"]],
+ partners:[["NTTドコモ(FEEL TECH)","https://www.docomo.ne.jp/corporate/technology/rd/ft/001.html"],["NTT R&D","https://www.rd.ntt/"],["Sony PCL(Haptics)","https://www.sonypcl.jp/"]],
+ decision:{go:"△ 共同実証枠で推進", cost:"R&D投資", lead:"6ヶ月〜", contact:"@R&D担当"}},
+
+// ===== Sony PCLリサーチからの追加 =====
+{id:"vp-icvfx", t:"バーチャルプロダクション(LEDウォール × インカメラVFX)", tags:["vp","led","xr","sensing"], uc:["event","live"], ph:3, diff:3, date:"2026-05-15", hot:121, pat:"scan", seed:71,
+ origin:"外部リサーチ: Sony PCL 清澄白河BASE / Hibino VFX Studio",
+ sum:"大型LEDウォールに背景CGをリアルタイム表示し、カメラトラッキングと連動させて「その場で合成済みの映像」を撮るインカメラVFX。ロケ不要・時間帯自由・グリーンバック合成の違和感なしという利点から、CM・映画・MV制作で急速に普及し、国内でも商用スタジオが複数稼働している。",
+ verify:"Sony PCLはVPスタジオ「清澄白河BASE」を軸に、撮影環境を事前シミュレートする「VP Simulator」、LEDウォール背景素材を現場でリアルタイム編集する「LIVE EDIT」など運用ツール群まで自社開発しており、ワークフローが商用レベルで確立していることを確認。ヒビノもHibino VFX Studioで事業化済み。",
+ barriers:["LEDウォール・トラッキング・リアルタイムレンダリングの統合に高い技術体制が必要","スタジオ利用費+背景アセット制作費で従来撮影よりも事前工程が重い","背景CG(Unreal Engine)の品質が最終画質を直接決める","撮影監督・照明など現場側のVP経験の有無で効率が大きく変わる"],
+ foresight:"映像制作の標準手法として定着が進み、今後は「撮影」だけでなくライブ配信・イベント中継のリアルタイム背景演出への転用が拡大する見込み。体験設計側としては、VPスタジオをXRライブやバーチャルイベントの収録基盤として使いこなせると提案の幅が広がる。",
+ links:[["Sony PCL — VP Simulator","https://www.sonypcl.jp/technology/00014.html"],["Sony PCL — LIVE EDIT(現場リアルタイム背景編集)","https://www.sonypcl.jp/technology/00009.html"],["Unreal Engine 公式","https://www.unrealengine.com/"]],
+ yts:[["バーチャルプロダクション撮影の解説を検索","バーチャルプロダクション LEDウォール インカメラVFX"],["清澄白河BASEの事例を検索","Sony PCL 清澄白河BASE バーチャルプロダクション"]],
+ intl:[["ILM(StageCraft — VP手法の火付け役)","https://www.ilm.com/"],["disguise — xRステージプラットフォーム","https://www.disguise.one/"]],
+ domestic:[["Sony PCL 清澄白河BASE(VPスタジオ+運用ツール群)","https://www.sonypcl.jp/technology/"],["Hibino VFX Studio","https://hibino-vfxstudio.com/"]],
+ partners:[["Sony PCL","https://www.sonypcl.jp/"],["Hibino VFX Studio","https://hibino-vfxstudio.com/"],["ROE Visual(LEDパネル)","https://www.roevisual.com/"],["Epic Games / Unreal Engine","https://www.unrealengine.com/"]],
+ gearNote:"自前構築ではなく商用VPスタジオの利用が現実的。LEDは8K Crystal LED等の高精細システム、再生系はインテリジェントメディアサーバーで構成される。",
+ gear:[["Sony PCL — 8K Crystal LED ディスプレイシステム","https://www.sonypcl.jp/technology/00005.html"],["Sony PCL — ZOET®4(メディアサーバー)","https://www.sonypcl.jp/technology/00004.html"],["disguise","https://www.disguise.one/"]],
+ decision:{go:"○ スタジオ利用ベースで提案可", cost:"中〜高", lead:"1〜3ヶ月", contact:"@テクニカルディレクター"}},
+
+{id:"spatial-audio", t:"空間音響 / 音のVR(Sonic Surf VR等)", tags:["audio","haptic"], uc:["museum","event","retail"], ph:2, diff:3, date:"2026-04-05", hot:73, pat:"wave", seed:73,
+ origin:"外部リサーチ: Sony PCL / 空間音響ソリューション",
+ sum:"多数のスピーカーで音像を空間内の任意の位置に定位させ、「音がそこに居る」体験をつくる技術。Sony PCLの「Sonic Surf VR」はヘッドホン等の個別デバイスなしで、歩き回る来場者ごとに異なる音体験を提示できる。映像偏重になりがちな没入空間で、聴覚から没入度を引き上げる要素技術。",
+ verify:"Sonic Surf VRはマルチチャンネルスピーカーによる音のVR演出として展示・イベントでの活用実績あり。ライブ音響の世界でもL-ISAやd&b Soundscapeなどイマーシブ音響の導入会場が増えており、機材・ノウハウの調達経路は確立しつつあることを確認。",
+ barriers:["スピーカー本数と設置設計により空間側の制約を受ける","音響設計者(イマーシブ音響経験者)が国内で限られる","映像と違い効果が伝わりにくく、デモ体験なしでは提案が通りにくい","会場の反響・騒音環境に品質が左右される"],
+ foresight:"没入型施設の差別化が「映像の解像度」から「五感の統合」に移る中、空間音響は費用対効果の高い次の一手。ハプティクスや香りと組み合わせた多感覚演出の中核になる見込みで、音響設計パートナーとの関係構築を先行させる価値がある。",
+ links:[["Sony PCL — Sonic Surf VR","https://www.sonypcl.jp/technology/00015.html"],["ヒビノ — 中・大規模コンサート音響(PA)","https://www.hibino.co.jp/sound/"]],
+ yts:[["Sonic Surf VRのデモを検索","Sonic Surf VR ソニー 空間音響"],["イマーシブ音響の事例を検索","immersive audio L-ISA soundscape"]],
+ intl:[["L-Acoustics(L-ISA イマーシブ音響)","https://www.l-acoustics.com/"],["d&b audiotechnik(Soundscape)","https://www.dbaudio.com/"]],
+ domestic:[["Sonic Surf VR(Sony PCL)","https://www.sonypcl.jp/technology/00015.html"]],
+ partners:[["Sony PCL","https://www.sonypcl.jp/"],["ヒビノサウンド(PA/音響設計)","https://www.hibino.co.jp/sound/"]],
+ decision:{go:"○ 没入施設・展示の付加提案に有効", cost:"中", lead:"2〜4ヶ月", contact:"@テクニカルディレクター"}},
+
+// ===== ホログラム系 =====
+{id:"hologram-display", t:"ホログラムサイネージ / 裸眼3Dディスプレイ", tags:["holo","led","xr","avatar"], uc:["retail","event","museum"], ph:3, diff:2, date:"2026-06-30", hot:118, pat:"orbit", seed:79,
+ origin:"外部リサーチ: Looking Glass Factory / 3D Phantom(Life is Style)",
+ sum:"ヘッドセットなしの肉眼で「宙に浮かぶ立体映像」を見せるディスプレイ群。方式は大きく2系統: Looking Glassのライトフィールド方式(最大100視点を同時投影し複数人が同時に立体視。薄型のHLDは86インチまで大型化)と、3D PhantomのLED回転ブレード方式(高輝度の光の残像で映像が浮遊して見える。国内導入社数No.1・特許取得)。店頭・展示会・イベントで「3人に1人が振り返る」レベルのアイキャッチを低い導入ハードルで実現できる。",
+ verify:"3D Phantomは最短1日からのレンタル・100台までの拡張同期・企画から制作までワンストップ提供と、調達スキームが確立済み。Looking GlassはHLDがSID 2026 Display of the Year受賞、2D動画をそのまま立体感ある表示に変換できるため専用3D制作パイプラインが不要なことを確認。どちらも「すぐ使える」フェーズにある。",
+ barriers:["表示サイズと視認距離に制約があり、大空間では演出の主役になりにくい","回転ブレード方式は安全対策(接触防止)と設置位置の配慮が必要","ライトフィールド方式の大型モデルは輸入・価格面のハードル","コンテンツは方式ごとの最適化(視点数・ループ設計)が必要"],
+ foresight:"サイネージ市場で「平面LEDの次」を担う存在として普及期に入った。ホログラム表示は生成AIキャラクター・デジタルヒューマンとの相性が良く、接客・案内・推し活文脈での常設需要が拡大する見込み。小規模でも体験価値が高いので、店舗・ショールーム案件のフックとして持っておきたい技術。",
+ links:[["Looking Glass Factory 公式","https://lookingglassfactory.com/"],["3D Phantom 公式(3Dホログラムサイネージ)","https://phantom-3d.net/"]],
+ yts:[["Looking Glass HLDのデモを検索","Looking Glass Hololuminescent Display hologram"],["3D Phantomの演出事例を検索","3D Phantom ホログラム サイネージ 事例"]],
+ intl:[["Looking Glass — HLD(2Dビデオを立体表示、86インチまで)","https://lookingglassfactory.com/hld-overview"],["Looking Glass — ライトフィールドディスプレイ(開発者向け)","https://lookingglassfactory.com/displays-overview"]],
+ domestic:[["3D Phantom 導入事例(店舗・イベント・交通広告)","https://phantom-3d.net/case/"],["株式会社Life is Style(3D Phantom提供元)","https://lifeis.style"]],
+ partners:[["Looking Glass Factory(NY)","https://lookingglassfactory.com/"],["Life is Style(3D Phantom・東京)","https://phantom-3d.net/"]],
+ gearNote:"3D Phantomは最短1日からレンタル可能で、設置は「掛けて留めるだけ」と軽量。Looking GlassはGo/16\"/27\"のライトフィールド機が即納体制、大型HLDは予約制。小規模PoCから始めやすい調達環境。",
+ gear:[["3D Phantom — レンタル/導入相談","https://phantom-3d.net/contact/"],["Looking Glass — 製品ラインナップ","https://lookingglassfactory.com/displays-overview"]],
+ decision:{go:"◎ 小規模から即提案可", cost:"低〜中", lead:"2週間〜2ヶ月", contact:"@テクニカルディレクター"}},
+];
+
+const phL={1:["p1","研究開発"],2:["p2","実証実験"],3:["p3","社会実装"]};
+const tagNames={pm:"Projection Mapping",xr:"XR/VR/Metaverse",ai:"AI/Generative",dt:"Digital Twin",net:"IOWN/6G",pc:"Point Cloud",led:"LED/DOOH",drone:"Drone",haptic:"Haptics",holo:"Hologram",viz:"Data Viz",sensing:"Sensing/Tracking",audio:"Spatial Audio",vp:"Virtual Production",interactive:"Interactive",avatar:"Avatar/Digital Human",gs:"3D Gaussian Splatting",kinetic:"Kinetic",robot:"Robot Arm",tangible:"Tangible Display"};
+const tagJa={pm:"#プロジェクションマッピング",xr:"#XR/VR/メタバース",ai:"#AI/ジェネレーティブ",dt:"#デジタルツイン",net:"#IOWN/6G/低遅延伝送",pc:"#点群/ボリュメトリック",led:"#大型LED/DOOH",drone:"#ドローン",haptic:"#ハプティクス/五感",holo:"#ホログラム",viz:"#データビジュアライズ",sensing:"#センシング/トラッキング",audio:"#空間音響",vp:"#バーチャルプロダクション",interactive:"#インタラクティブ/参加型",avatar:"#アバター/デジタルヒューマン",gs:"#3Dガウシアンスプラッティング",kinetic:"#キネティック/ライト",robot:"#ロボットアーム",tangible:"#タンジブルディスプレイ"};
+const ucJa={event:"イベント演出",live:"音楽ライブ",sports:"スポーツ観戦",museum:"展覧会/ミュージアム",retail:"体験型店舗/ショールーム",city:"都市/防災/観光"};
+
+// ============================================================
+// 画面遷移
+// ============================================================
+function go(s){
+  document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));
+  document.getElementById('s-'+s).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// 生成済みサムネイル(assets/thumbs/<id>.jpg) + 読み込み失敗時はSVGにフォールバック
+const SHOW_IMAGES=true;
+function thumbHTML(i,w,h){
+  const svg=svgThumb(i.pat,i.seed,w,h);
+  if(!SHOW_IMAGES) return svg;
+  return svg+`<img src="assets/thumbs/${i.id}.jpg" alt="${i.t}" loading="lazy" onerror="this.style.display='none'">`;
+}
+
+// ============================================================
+// 一覧(フィルタ・ソート・検索)
+// ============================================================
+let tagSet=new Set(), ucF=new Set(), sort="ready", searchQ="";
+function matchQ(i){
+  if(!searchQ) return true;
+  const q=searchQ.toLowerCase();
+  const hay=[i.t, i.sum||"", i.origin||"", i.tags.map(t=>tagJa[t]).join(" "), i.uc.map(u=>ucJa[u]).join(" ")].join(" ").toLowerCase();
+  return q.split(/\s+/).filter(Boolean).every(w=>hay.includes(w));
+}
+function render(){
+  let list=items.filter(i=>([...tagSet].every(t=>i.tags.includes(t))) && ([...ucF].every(u=>i.uc.includes(u))) && matchQ(i));
+  if(sort==="new") list.sort((a,b)=>b.date.localeCompare(a.date));
+  if(sort==="hot") list.sort((a,b)=>b.hot-a.hot);
+  if(sort==="easy") list.sort((a,b)=>a.diff-b.diff);
+  if(sort==="ready") list.sort((a,b)=>b.ph-a.ph);
+  if(sort==="rand") list.sort(()=>Math.random()-0.5);
+  document.getElementById('hitcnt').innerHTML=`<span class="num">${list.length}</span> Results`;
+  document.getElementById('cardgrid').innerHTML=list.map(i=>`
+    <div class="card" onclick="goDetail('${i.id}')">
+      <div class="thumb">${thumbHTML(i,400,220)}</div>
+      <span class="cat mono">${i.tags.map(t=>tagNames[t]||t).join(" / ")}</span>
+      <h3>${i.t}</h3>
+      <div class="meta-row"><span class="phase ${phL[i.ph][0]} mono">${phL[i.ph][1]}</span><span class="mono" style="text-align:right;">難易度${"★".repeat(i.diff)}${"☆".repeat(5-i.diff)}<br>${i.date}</span></div>
+    </div>`).join("");
+}
+// 技術タグは複数選択(AND絞り込み)。「すべて」で解除
+document.querySelectorAll('#tagchips .chip').forEach(c=>c.onclick=()=>{
+  if(c.dataset.t==="all"){
+    tagSet.clear(); ucF.clear();
+    document.querySelectorAll('#tagchips .chip').forEach(x=>x.classList.toggle('on', x.dataset.t==="all"));
+  }else{
+    c.classList.toggle('on');
+    c.classList.contains('on')?tagSet.add(c.dataset.t):tagSet.delete(c.dataset.t);
+    document.querySelector('#tagchips .chip[data-t="all"]').classList.toggle('on', tagSet.size===0);
+  }
+  render();
+});
+document.getElementById('sortsel').onchange=e=>{sort=e.target.value; render();};
+
+// 検索: 全画面のヘッダー入力を同期。入力で一覧を絞り込み、他画面ではEnterで一覧へ移動
+document.querySelectorAll('.searchbar').forEach(inp=>{
+  inp.addEventListener('input',e=>{
+    searchQ=e.target.value;
+    document.querySelectorAll('.searchbar').forEach(x=>{if(x!==e.target)x.value=searchQ;});
+    render();
+  });
+  inp.addEventListener('keydown',e=>{
+    if(e.key==="Enter"){e.preventDefault(); render(); go('home');}
+  });
+});
+
+// ============================================================
+// 詳細(データ駆動)
+// ============================================================
+function related(item){
+  return items.filter(i=>i.id!==item.id)
+    .map(i=>[i, i.tags.filter(t=>item.tags.includes(t)).length + i.uc.filter(u=>item.uc.includes(u)).length*0.5])
+    .sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
+}
+function goDetail(id){
+  const i=items.find(x=>x.id===id); if(!i) return;
+  document.getElementById('d-hero').innerHTML=thumbHTML(i,1100,340);
+  const pb=document.getElementById('d-phase');
+  pb.textContent=phL[i.ph][1]+"フェーズ"; pb.className="phase mono "+phL[i.ph][0];
+  document.getElementById('d-title').textContent=i.t;
+  document.getElementById('d-tagline').innerHTML=i.tags.map(t=>tagJa[t]).join(" ")+" &nbsp;|&nbsp; Use Case: "+i.uc.map(u=>ucJa[u]).join(" / ");
+  document.getElementById('d-meta').textContent=i.date+" / Origin: "+i.origin;
+  document.getElementById('d-sum').textContent=i.sum;
+  document.getElementById('d-verify').textContent=i.verify;
+  document.getElementById('d-barriers').innerHTML=i.barriers.map(b=>`<li>${b}</li>`).join("");
+  document.getElementById('d-foresight').textContent=i.foresight;
+  const linkList=(arr)=>(arr||[]).map(l=>{
+    const dom=l[1].replace(/^https?:\/\//,"").split("/")[0];
+    return `<a class="oglink" href="${l[1]}" target="_blank" rel="noopener">
+      <span class="ogthumb"><span class="ldom mono" style="font-size:9px;">${dom}</span>${pvImg(l[1])}</span>
+      <span class="t">${l[0]}<small>${dom}</small></span>
+    </a>`;
+  }).join("")||`<span class="caption">(未登録)</span>`;
+  document.getElementById('d-links').innerHTML=linkList(i.links);
+  document.getElementById('d-intl').innerHTML=linkList(i.intl);
+  document.getElementById('d-domestic').innerHTML=linkList(i.domestic);
+  document.getElementById('d-partners').innerHTML=linkList(i.partners);
+  document.getElementById('d-yt').innerHTML=i.yts.map(y=>{
+    // y=[表示タイトル, 検索クエリ, 動画ID(任意)] — IDがあれば本物のサムネイル、無ければ検索結果ページのプレビュー
+    const vid=y[2];
+    const href=vid?`https://www.youtube.com/watch?v=${vid}`:yt(y[1]);
+    const imgHtml=vid
+      ?`<img src="https://i.ytimg.com/vi/${vid}/mqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`
+      :pvImg(href,"position:absolute;inset:0;width:100%;height:100%;object-fit:cover;");
+    return `<a class="yt" href="${href}" target="_blank" rel="noopener">
+      <span class="ytthumb" style="position:relative;">${imgHtml}▶</span>
+      <span class="t">${y[0]}<small>${vid?"YouTube動画":"YouTube検索: 「"+y[1]+"」"}</small></span>
+    </a>`;
+  }).join("");
+  document.getElementById('d-gauge').innerHTML=[1,2,3,4,5].map(n=>`<i class="${n<=i.diff?'f':''}"></i>`).join("");
+  const cells=["研究開発","実証実験","限定実装","即戦力"], cur={1:0,2:1,3:3}[i.ph];
+  document.getElementById('d-phasebar').innerHTML=cells.map((c,n)=>`<span class="${n===cur?'cur':''}">${c}</span>`).join("");
+  const gp=document.getElementById('d-gear-panel');
+  if(i.gear && i.gear.length){
+    gp.style.display="";
+    document.getElementById('d-gearnote').textContent=i.gearNote||"";
+    document.getElementById('d-gear').innerHTML=i.gear.map(g=>`<a class="linkline" href="${g[1]}" target="_blank" rel="noopener">🔧 ${g[0]}</a>`).join("");
+  }else{
+    gp.style.display="none";
+  }
+  document.getElementById('d-rel').innerHTML=related(i).map(r=>`
+    <div class="relcard" onclick="goDetail('${r.id}')">
+      <div class="thumb">${thumbHTML(r,110,64)}</div>
+      <h3>${r.t}</h3>
+    </div>`).join("");
+  hydrateOG();
+  go('detail');
+}
+
+// ============================================================
+// LINKSページ: 全リンクをフラット化してビジュアル表示
+// ============================================================
+const CAT_LABEL={links:"関連リンク",yt:"YouTube",intl:"海外実績",domestic:"国内実績",partners:"パートナー"};
+function buildAllLinks(){
+  const seen=new Set(), out=[];
+  items.forEach(i=>{
+    const push=(arr,cat)=>(arr||[]).forEach(l=>{
+      const key=cat+"|"+l[1];
+      if(seen.has(key)) return; seen.add(key);
+      out.push({t:l[0], u:l[1], cat, tech:i});
+    });
+    push(i.links,"links"); push(i.intl,"intl"); push(i.domestic,"domestic"); push(i.partners,"partners");
+    (i.yts||[]).forEach(y=>{
+      const vid=y[2];
+      const u=vid?`https://www.youtube.com/watch?v=${vid}`:yt(y[1]);
+      const key="yt|"+u; if(seen.has(key)) return; seen.add(key);
+      out.push({t:y[0], u, vid, cat:"yt", tech:i});
+    });
+  });
+  return out;
+}
+let allLinks=null, lcat="all", ltag="all", lscene="all", lorder=[];
+function shuffleLinks(){ lorder=allLinks.map((_,n)=>n).sort(()=>Math.random()-0.5); }
+function renderLinks(){
+  if(!allLinks){ allLinks=buildAllLinks(); shuffleLinks(); }
+  const list=lorder.map(n=>allLinks[n]).filter(l=>
+    (lcat==="all"||l.cat===lcat) && (ltag==="all"||l.tech.tags.includes(ltag)) && (lscene==="all"||l.tech.uc.includes(lscene)));
+  document.getElementById('lhit').innerHTML=`<span class="num">${list.length}</span> Links`;
+  document.getElementById('linksgrid').innerHTML=list.map(l=>`
+    <a class="lcard" href="${l.u}" target="_blank" rel="noopener">
+      <span class="lthumb"><span class="lcat mono">${CAT_LABEL[l.cat]}</span><span class="ldom mono">${l.u.replace(/^https?:\/\//,"").split("/")[0]}</span>${l.vid?`<img src="https://i.ytimg.com/vi/${l.vid}/mqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`:pvImg(l.u)}</span>
+      <h3>${l.t}</h3>
+      <div class="lmeta mono">${l.u.replace(/^https?:\/\//,"").split("/")[0]}</div>
+      <span class="ltech" onclick="event.preventDefault();event.stopPropagation();goDetail('${l.tech.id}')">${l.tech.t} →</span>
+    </a>`).join("");
+  hydrateOG();
+}
+function goLinks(){ renderLinks(); go('links'); }
+(function(){
+  const wrap=document.getElementById('ltagchips');
+  Object.keys(tagJa).forEach(t=>{
+    const c=document.createElement('span');
+    c.className="chip"; c.dataset.t=t; c.textContent=tagJa[t];
+    wrap.appendChild(c);
+  });
+  wrap.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+    wrap.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on'); ltag=c.dataset.t; renderLinks();
+  });
+  document.querySelectorAll('#lcatchips .chip').forEach(c=>c.onclick=()=>{
+    document.querySelectorAll('#lcatchips .chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on'); lcat=c.dataset.c; renderLinks();
+  });
+  document.querySelectorAll('#lscenechips .chip').forEach(c=>c.onclick=()=>{
+    document.querySelectorAll('#lscenechips .chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on'); lscene=c.dataset.u; renderLinks();
+  });
+  document.getElementById('lshuffle').onclick=()=>{ shuffleLinks(); renderLinks(); };
+})();
+
+// ============================================================
+// STUDIOページ: クリエイティブスタジオ・企業リスト
+// ============================================================
+const SCAT={exp:"体験デザイン/演出",visual:"映像・ビジュアル",gear:"機材・プロダクション",ai:"AI・R&D",drone:"ドローン",venue:"施設・ベニュー"};
+const studios=[
+ // ---- 日本 ----
+ {n:"IMAGICA EEX", r:"jp", hq:"東京", c:["exp"], d:"体験設計の総合プロデュース。XRライブ・高臨場感ライブビューイング・空間演出(自社)", u:"https://eex.co.jp/"},
+ {n:"Rhizomatiks / Abstract Engine", r:"jp", hq:"東京", c:["ai","exp"], d:"リアルタイムセンシング×表現のR&D集団。Perfume演出、Fencing Visualized", u:"https://rhizomatiks.com/"},
+ {n:"PARTY", r:"jp", hq:"東京", c:["exp"], d:"ナラティブ×テクノロジーの体験デザイン。VARP、デジタルヒューマン、空港体験", u:"https://prty.jp/"},
+ {n:"1→10(ワントゥーテン)", r:"jp", hq:"京都/東京", c:["exp","ai"], d:"空間DXカンパニー。旧芝離宮夜会、LBE、ARパッケージ", u:"https://www.1-10.com/"},
+ {n:"Bascule", r:"jp", hq:"東京", c:["exp"], d:"参加型ライブ/放送連動。This is 嵐 LIVE、KIBO宇宙放送局", u:"https://bascule.co.jp/"},
+ {n:"Dentsu Lab Tokyo", r:"jp", hq:"東京", c:["ai"], d:"R&Dプロトタイピング。生成触覚AI、LAIV、THE TECHNOLOGY REPORT", u:"https://dentsulab.tokyo/"},
+ {n:"WOW", r:"jp", hq:"東京/仙台/ロンドン", c:["visual","exp"], d:"ビジュアルデザインスタジオ。万博null²、TAKANAWA GATEWAY未来体験シアター", u:"https://www.w0w.co.jp/"},
+ {n:"Qosmo", r:"jp", hq:"東京", c:["ai"], d:"AI×クリエイティビティ。AI DJ、生成音楽・映像の研究開発", u:"https://qosmo.jp/"},
+ {n:"BASSDRUM", r:"jp", hq:"東京/NY", c:["ai","exp"], d:"テクニカルディレクター集団。技術実装の伴走とTHE TECHNOLOGY REPORT共同発行", u:"https://bassdrum.org/"},
+ {n:"teamLab", r:"jp", hq:"東京", c:["exp","visual","venue"], d:"アート集団。ボーダレス/プラネッツなど世界常設多数", u:"https://www.teamlab.art/"},
+ {n:"NAKED", r:"jp", hq:"東京", c:["exp","visual"], d:"体験型アート・プロジェクションの企画制作。FLOWERS等", u:"https://naked.co.jp/"},
+ {n:"Sony PCL", r:"jp", hq:"東京(清澄白河BASE)", c:["gear","visual","exp"], d:"ソニーグループの映像技術会社。バーチャルプロダクション、8K Crystal LED、可搬型ボリュメトリック、Haptics、Sonic Surf VR", u:"https://www.sonypcl.jp/"},
+ {n:"レッドクリフ", r:"jp", hq:"東京", c:["drone"], d:"ドローンショー国内シェアNo.1。万博2,500機、渋谷3,030機", u:"https://redcliff-inc.co.jp/"},
+ {n:"ドローンショー・ジャパン", r:"jp", hq:"金沢", c:["drone"], d:"国内ドローンショーのパイオニア。機体開発から運航まで", u:"https://droneshow.co.jp/"},
+ {n:"丹青社", r:"jp", hq:"東京", c:["venue","exp"], d:"空間づくりの総合プロデュース。ミュージアム・体験型店舗", u:"https://www.tanseisha.co.jp/"},
+ {n:"乃村工藝社", r:"jp", hq:"東京", c:["venue","exp"], d:"空間づくりの総合プロデュース。展示・商業空間・文化施設", u:"https://www.nomurakougei.co.jp/"},
+ // ---- 海外 ----
+ {n:"UNIT9", r:"global", hq:"ロンドン/NY/LA/ベルリン", c:["exp","ai"], d:"グローバル制作スタジオ。VR/AR・ゲーム・リアルタイムVFX・体験", u:"https://www.unit9.com/"},
+ {n:"Hovercraft", r:"global", hq:"ポートランド/デンバー", c:["exp"], d:"体験&イノベーション。Nike等のリテール体験・アクティベーション", u:"https://www.hovercraftstudio.com/about"},
+ {n:"Phygitech", r:"global", hq:"ドバイ", c:["exp","venue","ai"], d:"フィジタル(物理×デジタル)空間。Hello Park 40拠点超、CVトラッキング", u:"https://phygi.tech/"},
+ {n:"Moment Factory", r:"global", hq:"モントリオール/東京", c:["exp","visual"], d:"ナイトウォークLumina、AURA、空港・スタジアムのメディア空間", u:"https://momentfactory.com/ja"},
+ {n:"Refik Anadol Studio", r:"global", hq:"ロサンゼルス", c:["ai","visual"], d:"AIデータアートの第一人者。MoMA収蔵、Sphere外壁", u:"https://refikanadol.com/"},
+ {n:"Meow Wolf", r:"global", hq:"サンタフェ", c:["exp","venue"], d:"物語主導の常設イマーシブ施設。米国複数都市で展開", u:"https://meowwolf.com/"},
+ {n:"ARTECHOUSE", r:"global", hq:"NY/ワシントンD.C./マイアミ", c:["exp","venue"], d:"デジタルアート常設ギャラリー", u:"https://www.artechouse.com/"},
+ {n:"Cosm", r:"global", hq:"ダラス/LA", c:["venue"], d:"Shared Realityドームでの没入スポーツ観戦ベニュー", u:"https://www.cosm.com/"},
+ {n:"Sphere Studios", r:"global", hq:"ラスベガス/バーバンク", c:["visual","venue"], d:"Sphere専用コンテンツの制作スタジオ(超高解像度・大判撮影)", u:"https://spherestudios.com/"},
+ {n:"Sky Elements", r:"global", hq:"テキサス", c:["drone"], d:"ギネス記録多数の大規模ドローンショー", u:"https://skyelementsdrones.com/"},
+ {n:"MPLUSPLUS", r:"jp", hq:"東京", c:["exp","gear"], d:"藤本実率いる演出集団。LEDフラッグ/LEDリボン/ビジョンドローンなどウェアラブルLED×パフォーマンス同期制御", u:"https://mplpl.com/"},
+ {n:"ルーセントデザイン", r:"jp", hq:"東京", c:["visual","exp"], d:"光の空間演出・ライトアート。コンラッド大阪「AURA」、KAWAI「Crystal Rain」(ミラノサローネ)、資生堂Water Holography", u:"https://www.lucent-design.co.jp/"},
+ {n:"シンユニティグループ(DEEPLY Immersive)", r:"jp", hq:"大阪/東京", c:["exp","venue","gear"], d:"壁・床・天井の全面投影+五感(香り・触感・振動)のイマーシブ空間を機材調達込みで実装。シムディレクト・タケナカ", u:"https://www.symunity.co.jp/deeplyimmersive/"},
+ {n:"Inty", r:"global", hq:"モスクワ", c:["exp"], d:"インタラクティブプレゼンテーション/インスタレーションのスタジオ。メディアテクノロジー×モダンデザイン", u:"https://inty.pro/"},
+ {n:"NOWHERE", r:"global", hq:"上海", c:["exp","visual"], d:"アート×テクノロジーのニューメディアスタジオ。インスタレーション・センシング表現", u:"https://studionowhere.com/"},
+ {n:"SOSO", r:"global", hq:"ボストン/サンディエゴ", c:["exp","visual"], d:"空間×デジタルの体験デザイン。Google Cambridge等のレスポンシブ環境・インタラクティブ展示", u:"https://www.sosolimited.com/"},
+];
+let sreg="all", scat="all";
+function renderStudio(){
+  const list=studios.filter(s=>(sreg==="all"||s.r===sreg)&&(scat==="all"||s.c.includes(scat)));
+  document.getElementById('shit').innerHTML=`<span class="num">${list.length}</span> Studios`;
+  document.getElementById('studiogrid').innerHTML=list.map(s=>`
+    <a class="lcard" href="${s.u}" target="_blank" rel="noopener">
+      <span class="lthumb"><span class="lcat mono">${s.r==="jp"?"日本":"海外"} / ${s.hq}</span><span class="ldom mono">${s.u.replace(/^https?:\/\//,"").split("/")[0]}</span>${pvImg(s.u)}</span>
+      <h3>${s.n}</h3>
+      <div class="lmeta" style="font-size:12px; color:var(--desc); line-height:1.6;">${s.d}</div>
+      <div class="lmeta mono" style="margin-top:4px;">${s.c.map(c=>SCAT[c]).join(" / ")}</div>
+    </a>`).join("");
+  hydrateOG();
+}
+function goStudio(){ renderStudio(); go('studio'); }
+
+// ============================================================
+// EQUIPMENTページ: 機材の販売・レンタル・テクニカルプロダクション
+// ============================================================
+const ECAT={led:"LEDビジョン/サイネージ",projector:"プロジェクター",audio:"音響",server:"メディアサーバー/制御",holo:"ホログラム",kinetic:"キネティック",vol:"ボリュメトリック",rental:"レンタル/オペレーション",vp:"バーチャルプロダクション",light:"照明",sfx:"特殊効果"};
+const equipment=[
+ // ---- 日本 ----
+ {n:"ヒビノ", r:"jp", hq:"東京", c:["led","audio","rental","vp"], d:"音と映像のプレゼンテーター。コンサート音響(PA)・大型映像・LED(クロマテック)・Hibino VFX Studio。レンタル+オペレーション体制", u:"https://www.hibino.co.jp/"},
+ {n:"Sony PCL", r:"jp", hq:"東京(清澄白河BASE)", c:["led","vp","vol","audio"], d:"バーチャルプロダクション、8K Crystal LED、可搬型ボリュメトリック、Sonic Surf VR。撮影〜体験まで技術提供", u:"https://www.sonypcl.jp/"},
+ {n:"タケナカ(シンユニティグループ)", r:"jp", hq:"大阪/東京/名古屋/京都", c:["rental","projector","led","server"], d:"創立100年の映像・音響レンタル/設備施工。BeamPainting(マッピング)、トラッキング、超軽量LED AirlyVision、xRスタジオ", u:"https://www.takenaka-co.co.jp/"},
+ {n:"LED TOKYO", r:"jp", hq:"東京(原宿)", c:["led","rental"], d:"LEDビジョンの販売・レンタル・設置・運用をワンストップ提供。イマーシブビジョン、日本科学未来館の曲面LED納入", u:"https://led-tokyo.jp/"},
+ {n:"富士鷹(FUJITAKA)", r:"jp", hq:"東京(成城)", c:["led","kinetic"], d:"LEDディスプレイソリューション(COB/床用/フレキシブル/透過/GLASS/ドーム)とKinetic Light動光ソリューション。ショールームあり", u:"https://www.fujitaka-jp.com/category/products/display/"},
+ {n:"TxD(株式会社スピン)", r:"jp", hq:"東京(神楽坂)", c:["holo","rental"], d:"ホログラフィック市場のパイオニア。ホログラフィックステージEyeliner®、仮想照明合成xRES。ホロライブ等のライブ演出多数", u:"https://txd.jp/"},
+ {n:"Life is Style(3D Phantom)", r:"jp", hq:"東京(西新宿)", c:["holo","led","rental"], d:"LED回転ブレード式3Dホログラムサイネージ。国内導入社数No.1・特許取得・最短1日レンタル", u:"https://phantom-3d.net/"},
+ {n:"ギミック", r:"jp", hq:"神奈川(大和)/大阪/福岡", c:["sfx"], d:"特殊効果の企画・制作会社。特殊火薬効果、キャノン砲・紙ふぶき、フォグ、ジェットスモーク、スノー、風演出、炎・火花演出、水演出、視覚効果など。特殊効果用煙火の販売も実施", u:"https://www.gimmick.co.jp/"},
+ {n:"テルミック(TELMIC)", r:"jp", hq:"東京(台東)/吉川工場", c:["led","kinetic","rental"], d:"テレビ・舞台・イベント・コンサートのLEDビジョン・電飾・機構を設計〜製作〜設営〜操作・レンタルまでワンストップ提供する舞台テクニカル集団", u:"https://telmic.co.jp/"},
+ {n:"アートブレーンカンパニー(ABC)", r:"jp", hq:"東京(中野)", c:["light","audio","rental"], d:"ファッションショー・コンサート・舞台・展示会・ショーウインドウ等の音響・照明デザインとオペレーション。自社音響部門と連携し豊富な機材から最適プランを提案。機器レンタルも実施", u:"https://a-b-c.co.jp/"},
+ {n:"プリズム(Prism)", r:"jp", hq:"札幌/東京", c:["projector","light","audio","rental"], d:"映像・照明・音響を中心に「クリエイティブを具現化する」テクニカルカンパニー。さっぽろ雪まつり大雪像プロジェクションマッピング等のテクニカルディレクション・機材協力から、ライブ・展示会の技術協力まで対応", u:"https://www.eizou.com/"},
+ // ---- 海外 ----
+ {n:"PRG", r:"global", hq:"世界38拠点(日本あり)", c:["rental","projector","audio","led","light"], d:"照明・音響・ビデオ・リギングの360°テクニカルプロダクション", u:"https://www.prg.com/ja-jp/"},
+ {n:"disguise", r:"global", hq:"ロンドン", c:["server","vp"], d:"メディアサーバー/xRステージの業界標準プラットフォーム", u:"https://www.disguise.one/"},
+ {n:"ROE Visual", r:"global", hq:"深セン", c:["led","vp"], d:"ハイエンドLEDパネル。ツアー・バーチャルプロダクションで標準", u:"https://www.roevisual.com/"},
+ {n:"Christie", r:"global", hq:"米国/カナダ", c:["projector"], d:"高輝度プロジェクター・映像ソリューション", u:"https://www.christiedigital.com/"},
+ {n:"Looking Glass Factory", r:"global", hq:"ニューヨーク(ブルックリン)", c:["holo"], d:"裸眼3D/ホログラムディスプレイ。ライトフィールド方式とHLD(SID 2026 Display of the Year)", u:"https://lookingglassfactory.com/"},
+ {n:"4DViews", r:"global", hq:"グルノーブル", c:["vol"], d:"ボリュメトリックキャプチャシステムの開発・販売", u:"https://www.4dviews.com/"},
+ {n:"FENG-YI", r:"global", hq:"広州", c:["kinetic","led"], d:"キネティック照明の専門メーカー(2011年〜)。DMXウインチ・キネティックライトを自社工場製造、設計〜設置〜保守まで提供。90カ国以上で導入、Madrix/MA対応。国内はATOM SHINJUKU等", u:"https://www.fyilight.com/ja/"},
+];
+let ereg="all", ecat="all";
+function renderEquip(){
+  const list=equipment.filter(s=>(ereg==="all"||s.r===ereg)&&(ecat==="all"||s.c.includes(ecat)));
+  document.getElementById('ehit').innerHTML=`<span class="num">${list.length}</span> Companies`;
+  document.getElementById('equipgrid').innerHTML=list.map(s=>`
+    <a class="lcard" href="${s.u}" target="_blank" rel="noopener">
+      <span class="lthumb"><span class="lcat mono">${s.r==="jp"?"日本":"海外"} / ${s.hq}</span><span class="ldom mono">${s.u.replace(/^https?:\/\//,"").split("/")[0]}</span>${pvImg(s.u)}</span>
+      <h3>${s.n}</h3>
+      <div class="lmeta" style="font-size:12px; color:var(--desc); line-height:1.6;">${s.d}</div>
+      <div class="lmeta mono" style="margin-top:4px;">${s.c.map(c=>ECAT[c]).join(" / ")}</div>
+    </a>`).join("");
+  hydrateOG();
+}
+function goEquip(){ renderEquip(); go('equipment'); }
+document.querySelectorAll('#eregchips .chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('#eregchips .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on'); ereg=c.dataset.r; renderEquip();
+});
+document.querySelectorAll('#ecatchips .chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('#ecatchips .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on'); ecat=c.dataset.c; renderEquip();
+});
+document.querySelectorAll('#sregchips .chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('#sregchips .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on'); sreg=c.dataset.r; renderStudio();
+});
+document.querySelectorAll('#scatchips .chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('#scatchips .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on'); scat=c.dataset.c; renderStudio();
+});
+
+render();
+</script>
+</body>
+</html>
