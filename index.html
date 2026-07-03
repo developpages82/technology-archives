@@ -10,13 +10,13 @@
 <meta property="og:site_name" content="TECHNOLOGY ARCHIVE">
 <meta property="og:title" content="TECHNOLOGY ARCHIVE | Creative × Technology Intelligence">
 <meta property="og:description" content="クリエイティブ×テクノロジーの企画提案から実行までを支える、技術ドリブンなデータベース。キーワードや技術タグで絞り込んだり、体験やシーンからインスピレーションを得たりしながら、チームの共通理解を高めます。">
-<meta property="og:image" content="https://developpages82.github.io/technology-archives/assets/og-image.jpg">
+<meta property="og:image" content="https://developpages82.github.io/technology-archives/assets/og/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="TECHNOLOGY ARCHIVE | Creative × Technology Intelligence">
 <meta name="twitter:description" content="クリエイティブ×テクノロジーの企画提案から実行までを支える、技術ドリブンなデータベース。キーワードや技術タグで絞り込んだり、体験やシーンからインスピレーションを得たりしながら、チームの共通理解を高めます。">
-<meta name="twitter:image" content="https://developpages82.github.io/technology-archives/assets/og-image.jpg">
+<meta name="twitter:image" content="https://developpages82.github.io/technology-archives/assets/og/og-image.jpg">
 <style>
   /* ===== DESIGN.md (WIRED.jp) 準拠 ===== */
   :root{
@@ -191,14 +191,14 @@
   .links-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:24px 20px; margin-top:16px;}
   @media(min-width:1240px){.links-grid{grid-template-columns:repeat(5,1fr);}}
   @media(max-width:900px){.links-grid{grid-template-columns:repeat(2,1fr);}}
-  .lcard{display:block; text-decoration:none; color:inherit;}
+  .lcard{display:block; text-decoration:none; color:inherit; min-width:0;}
   .lcard .lthumb{display:block; position:relative; height:120px; background:var(--ph); overflow:hidden; border:1px solid var(--line-soft); margin-bottom:8px;}
   .lcard .lthumb img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top;}
   .lcard .lcat{position:absolute; left:0; top:0; z-index:2; background:var(--ink); color:#fff; font-size:9px; padding:2px 8px;}
-  .lcard h3{font-size:13px; font-weight:700; line-height:1.5; color:var(--ink); margin-bottom:2px;}
+  .lcard h3{font-size:13px; font-weight:700; line-height:1.5; color:var(--ink); margin-bottom:2px; overflow-wrap:anywhere;}
   .lcard:hover h3{text-decoration:underline;}
-  .lcard .lmeta{font-size:10px; color:var(--meta);}
-  .lcard .ltech{font-size:10px; color:var(--body); border:1px solid var(--line-soft); display:inline-block; padding:0 6px; margin-top:4px; cursor:pointer;}
+  .lcard .lmeta{font-size:10px; color:var(--meta); overflow-wrap:anywhere;}
+  .lcard .ltech{font-size:10px; color:var(--body); border:1px solid var(--line-soft); display:inline-block; max-width:100%; padding:0 6px; margin-top:4px; cursor:pointer; overflow-wrap:anywhere; white-space:normal;}
   .lcard .ltech:hover{background:var(--ink); color:#fff;}
 
   /* ===== スマートフォン調整(見切れ防止) ===== */
