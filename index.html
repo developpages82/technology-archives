@@ -66,10 +66,14 @@
   .caption{font-size:13px; color:var(--desc); margin-bottom:12px;}
 
   .chips{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0;}
-  .chip{border:1px solid var(--ink); background:#fff; color:var(--ink); padding:5px 14px; cursor:pointer; user-select:none;}
+  .chip{border:1px solid var(--ink); background:#fff; color:var(--ink); padding:5px 14px; cursor:pointer; user-select:none;
+    font-family:游ゴシック体,YuGothic,"游ゴシック Medium","Yu Gothic Medium",
+      游ゴシック,"Yu Gothic","ヒラギノ角ゴ ProN W3","Hiragino Kaku Gothic ProN",
+      "ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","MS ゴシック","MS Gothic",sans-serif;}
   .chip.on{background:var(--ink); color:#fff;}
   .chip.uc{border-color:var(--meta); color:var(--meta);}
   .chip.uc.on{background:var(--ink); border-color:var(--ink); color:#fff;}
+  #scatchips .chip.uc{border-color:var(--ink); color:var(--ink);}
 
   .sortrow{display:flex; align-items:center; gap:14px; margin:20px 0; flex-wrap:wrap;}
   .sortrow select{padding:7px 12px; border:1px solid var(--ink); background:#fff; font-size:13px; font-family:inherit;}
