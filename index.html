@@ -1083,7 +1083,7 @@ function goDetail(id){
     </a>`;
   }).join("");
   document.getElementById('d-gauge').innerHTML=[1,2,3,4,5].map(n=>`<i class="${n<=i.diff?'f':''}"></i>`).join("");
-  const cells=["研究開発","実証実験","限定実装","即戦力"], cur={1:0,2:1,3:3}[i.ph];
+  const cells=["社会実装","実証実験","研究開発"], cur={1:2,2:1,3:0}[i.ph];
   document.getElementById('d-phasebar').innerHTML=cells.map((c,n)=>`<span class="${n===cur?'cur':''}">${c}</span>`).join("");
   const gp=document.getElementById('d-gear-panel');
   if(i.gear && i.gear.length){
